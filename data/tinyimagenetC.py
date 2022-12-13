@@ -8,11 +8,12 @@ import torch.multiprocessing
 
 torch.multiprocessing.set_sharing_strategy("file_system")
 
-class TinyImageNet:
+
+class TinyImageNetC:
     def __init__(self, args):
         super(ImageNet,).__init__()
 
-        data_root = os.path.join(args.data, "tinyimagenet")
+        data_root = os.path.join(args.data, "Tiny-ImageNet-C")
 
         use_cuda = torch.cuda.is_available()
 
