@@ -13,7 +13,7 @@ class TinyImageNetC:
     def __init__(self, args):
         super(ImageNet,).__init__()
 
-        data_root = os.path.join(args.data, "Tiny-ImageNet-C")
+        data_root = os.path.join(args.data, "tinyimagenetC")
 
         use_cuda = torch.cuda.is_available()
 
