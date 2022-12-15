@@ -29,6 +29,5 @@ elif [ "$arch" = "resnet50" ] | [ "$dataset" = "tinyimagenet" ]; then
 
   python main.py --config configs/largescale/subnetonly/resnet50-ukn-unsigned.yaml --multigpu 0 --name tinyimagenet --data DATA/ --set TinyImageNet --prune-rate $i
 
-
 fi
 
