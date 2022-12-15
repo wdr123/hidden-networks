@@ -18,7 +18,7 @@ if [ "$arch" = "resnet18" ] | [ "$dataset" = "cifar10" ]; then
 
 elif [ "$arch" = "resnet18" ] | [ "$dataset" = "cifar100" ]; then
 
-  python main.py --config configs/smallscale/resnet18/resnet18-ukn-unsigned.yaml --multigpu 0 --name cifar100 --data DATA/ --set CIFAR100 --arch "c100ResNet18" --prune-rate $prune
+  python main.py --config configs/smallscale/resnet18/resnet18-ukn-unsigned.yaml --multigpu 0 --name cifar100 --data DATA/ --set CIFAR100 --arch c100ResNet18 --prune-rate $prune
 
 
 elif [ "$arch" = "resnet18" ] | [ "$dataset" = "tinyimagenet" ]; then
