@@ -1,0 +1,577 @@
+Bash version 4.2.46(2)-release...
+=> Reading YAML config from configs/smallscale/resnet18/resnet18-ukn-unsigned.yaml
+Namespace(arch='cResNet18', batch_size=256, bn_type='NonAffineBatchNorm', config='configs/smallscale/resnet18/resnet18-ukn-unsigned.yaml', conv_type='SubnetConv', data='DATA/', epochs=100, evaluate=False, first_layer_dense=False, first_layer_type=None, freeze_weights=True, init='kaiming_normal', label_smoothing=None, last_layer_dense=False, log_dir=None, low_data=1, lr=0.1, lr_policy='cosine_lr', mode='fan_in', momentum=0.9, multigpu=[0], multistep_lr_adjust=30, multistep_lr_gamma=0.1, name='cifar10', nesterov=False, no_bn_decay=False, nonlinearity='relu', num_classes=10, one_batch=False, optimizer='sgd', pretrained=None, print_freq=10, prune_rate=0.0, random_subnet=False, resume='', save_every=-1, scale_fan=False, score_init_constant=None, seed=None, set='CIFAR10', start_epoch=None, trainer='default', warmup_length=0, weight_decay=0.0005, width_mult=1.0, workers=4)
+=> Using trainer from trainers.default
+=> Creating model 'cResNet18'
+==> Conv Type: SubnetConv
+==> BN Type: NonAffineBatchNorm
+==> Building first layer with <class 'utils.conv_type.SubnetConv'>
+==> Setting prune rate of network to 0.0
+==> Setting prune rate of conv1 to 0.0
+==> Setting prune rate of layer1.0.conv1 to 0.0
+==> Setting prune rate of layer1.0.conv2 to 0.0
+==> Setting prune rate of layer1.1.conv1 to 0.0
+==> Setting prune rate of layer1.1.conv2 to 0.0
+==> Setting prune rate of layer2.0.conv1 to 0.0
+==> Setting prune rate of layer2.0.conv2 to 0.0
+==> Setting prune rate of layer2.0.shortcut.0 to 0.0
+==> Setting prune rate of layer2.1.conv1 to 0.0
+==> Setting prune rate of layer2.1.conv2 to 0.0
+==> Setting prune rate of layer3.0.conv1 to 0.0
+==> Setting prune rate of layer3.0.conv2 to 0.0
+==> Setting prune rate of layer3.0.shortcut.0 to 0.0
+==> Setting prune rate of layer3.1.conv1 to 0.0
+==> Setting prune rate of layer3.1.conv2 to 0.0
+==> Setting prune rate of layer4.0.conv1 to 0.0
+==> Setting prune rate of layer4.0.conv2 to 0.0
+==> Setting prune rate of layer4.0.shortcut.0 to 0.0
+==> Setting prune rate of layer4.1.conv1 to 0.0
+==> Setting prune rate of layer4.1.conv2 to 0.0
+==> Setting prune rate of fc to 0.0
+=> Rough estimate model params 11164352
+=> Freezing model weights
+==> No gradient to conv1.weight
+==> No gradient to layer1.0.conv1.weight
+==> No gradient to layer1.0.conv2.weight
+==> No gradient to layer1.1.conv1.weight
+==> No gradient to layer1.1.conv2.weight
+==> No gradient to layer2.0.conv1.weight
+==> No gradient to layer2.0.conv2.weight
+==> No gradient to layer2.0.shortcut.0.weight
+==> No gradient to layer2.1.conv1.weight
+==> No gradient to layer2.1.conv2.weight
+==> No gradient to layer3.0.conv1.weight
+==> No gradient to layer3.0.conv2.weight
+==> No gradient to layer3.0.shortcut.0.weight
+==> No gradient to layer3.1.conv1.weight
+==> No gradient to layer3.1.conv2.weight
+==> No gradient to layer4.0.conv1.weight
+==> No gradient to layer4.0.conv2.weight
+==> No gradient to layer4.0.shortcut.0.weight
+==> No gradient to layer4.1.conv1.weight
+==> No gradient to layer4.1.conv2.weight
+==> No gradient to fc.weight
+=> Parallelizing on [0] gpus
+<DEBUG> no gradient to module.conv1.weight
+<DEBUG> gradient to module.conv1.scores
+<DEBUG> no gradient to module.layer1.0.conv1.weight
+<DEBUG> gradient to module.layer1.0.conv1.scores
+<DEBUG> no gradient to module.layer1.0.conv2.weight
+<DEBUG> gradient to module.layer1.0.conv2.scores
+<DEBUG> no gradient to module.layer1.1.conv1.weight
+<DEBUG> gradient to module.layer1.1.conv1.scores
+<DEBUG> no gradient to module.layer1.1.conv2.weight
+<DEBUG> gradient to module.layer1.1.conv2.scores
+<DEBUG> no gradient to module.layer2.0.conv1.weight
+<DEBUG> gradient to module.layer2.0.conv1.scores
+<DEBUG> no gradient to module.layer2.0.conv2.weight
+<DEBUG> gradient to module.layer2.0.conv2.scores
+<DEBUG> no gradient to module.layer2.0.shortcut.0.weight
+<DEBUG> gradient to module.layer2.0.shortcut.0.scores
+<DEBUG> no gradient to module.layer2.1.conv1.weight
+<DEBUG> gradient to module.layer2.1.conv1.scores
+<DEBUG> no gradient to module.layer2.1.conv2.weight
+<DEBUG> gradient to module.layer2.1.conv2.scores
+<DEBUG> no gradient to module.layer3.0.conv1.weight
+<DEBUG> gradient to module.layer3.0.conv1.scores
+<DEBUG> no gradient to module.layer3.0.conv2.weight
+<DEBUG> gradient to module.layer3.0.conv2.scores
+<DEBUG> no gradient to module.layer3.0.shortcut.0.weight
+<DEBUG> gradient to module.layer3.0.shortcut.0.scores
+<DEBUG> no gradient to module.layer3.1.conv1.weight
+<DEBUG> gradient to module.layer3.1.conv1.scores
+<DEBUG> no gradient to module.layer3.1.conv2.weight
+<DEBUG> gradient to module.layer3.1.conv2.scores
+<DEBUG> no gradient to module.layer4.0.conv1.weight
+<DEBUG> gradient to module.layer4.0.conv1.scores
+<DEBUG> no gradient to module.layer4.0.conv2.weight
+<DEBUG> gradient to module.layer4.0.conv2.scores
+<DEBUG> no gradient to module.layer4.0.shortcut.0.weight
+<DEBUG> gradient to module.layer4.0.shortcut.0.scores
+<DEBUG> no gradient to module.layer4.1.conv1.weight
+<DEBUG> gradient to module.layer4.1.conv1.scores
+<DEBUG> no gradient to module.layer4.1.conv2.weight
+<DEBUG> gradient to module.layer4.1.conv2.scores
+<DEBUG> no gradient to module.fc.weight
+<DEBUG> gradient to module.fc.scores
+=> Getting CIFAR10 dataset
+=> Reading YAML config from configs/smallscale/resnet18/resnet18-ukn-unsigned.yaml
+Namespace(arch='cResNet18', batch_size=256, bn_type='NonAffineBatchNorm', config='configs/smallscale/resnet18/resnet18-ukn-unsigned.yaml', conv_type='SubnetConv', data='DATA/', epochs=100, evaluate=False, first_layer_dense=False, first_layer_type=None, freeze_weights=True, init='kaiming_normal', label_smoothing=None, last_layer_dense=False, log_dir=None, low_data=1, lr=0.1, lr_policy='cosine_lr', mode='fan_in', momentum=0.9, multigpu=[0], multistep_lr_adjust=30, multistep_lr_gamma=0.1, name='cifar10', nesterov=False, no_bn_decay=False, nonlinearity='relu', num_classes=10, one_batch=False, optimizer='sgd', pretrained=None, print_freq=10, prune_rate=0.1, random_subnet=False, resume='', save_every=-1, scale_fan=False, score_init_constant=None, seed=None, set='CIFAR10', start_epoch=None, trainer='default', warmup_length=0, weight_decay=0.0005, width_mult=1.0, workers=4)
+=> Using trainer from trainers.default
+=> Creating model 'cResNet18'
+==> Conv Type: SubnetConv
+==> BN Type: NonAffineBatchNorm
+==> Building first layer with <class 'utils.conv_type.SubnetConv'>
+==> Setting prune rate of network to 0.1
+==> Setting prune rate of conv1 to 0.1
+==> Setting prune rate of layer1.0.conv1 to 0.1
+==> Setting prune rate of layer1.0.conv2 to 0.1
+==> Setting prune rate of layer1.1.conv1 to 0.1
+==> Setting prune rate of layer1.1.conv2 to 0.1
+==> Setting prune rate of layer2.0.conv1 to 0.1
+==> Setting prune rate of layer2.0.conv2 to 0.1
+==> Setting prune rate of layer2.0.shortcut.0 to 0.1
+==> Setting prune rate of layer2.1.conv1 to 0.1
+==> Setting prune rate of layer2.1.conv2 to 0.1
+==> Setting prune rate of layer3.0.conv1 to 0.1
+==> Setting prune rate of layer3.0.conv2 to 0.1
+==> Setting prune rate of layer3.0.shortcut.0 to 0.1
+==> Setting prune rate of layer3.1.conv1 to 0.1
+==> Setting prune rate of layer3.1.conv2 to 0.1
+==> Setting prune rate of layer4.0.conv1 to 0.1
+==> Setting prune rate of layer4.0.conv2 to 0.1
+==> Setting prune rate of layer4.0.shortcut.0 to 0.1
+==> Setting prune rate of layer4.1.conv1 to 0.1
+==> Setting prune rate of layer4.1.conv2 to 0.1
+==> Setting prune rate of fc to 0.1
+=> Rough estimate model params 10047907
+=> Freezing model weights
+==> No gradient to conv1.weight
+==> No gradient to layer1.0.conv1.weight
+==> No gradient to layer1.0.conv2.weight
+==> No gradient to layer1.1.conv1.weight
+==> No gradient to layer1.1.conv2.weight
+==> No gradient to layer2.0.conv1.weight
+==> No gradient to layer2.0.conv2.weight
+==> No gradient to layer2.0.shortcut.0.weight
+==> No gradient to layer2.1.conv1.weight
+==> No gradient to layer2.1.conv2.weight
+==> No gradient to layer3.0.conv1.weight
+==> No gradient to layer3.0.conv2.weight
+==> No gradient to layer3.0.shortcut.0.weight
+==> No gradient to layer3.1.conv1.weight
+==> No gradient to layer3.1.conv2.weight
+==> No gradient to layer4.0.conv1.weight
+==> No gradient to layer4.0.conv2.weight
+==> No gradient to layer4.0.shortcut.0.weight
+==> No gradient to layer4.1.conv1.weight
+==> No gradient to layer4.1.conv2.weight
+==> No gradient to fc.weight
+=> Parallelizing on [0] gpus
+<DEBUG> no gradient to module.conv1.weight
+<DEBUG> gradient to module.conv1.scores
+<DEBUG> no gradient to module.layer1.0.conv1.weight
+<DEBUG> gradient to module.layer1.0.conv1.scores
+<DEBUG> no gradient to module.layer1.0.conv2.weight
+<DEBUG> gradient to module.layer1.0.conv2.scores
+<DEBUG> no gradient to module.layer1.1.conv1.weight
+<DEBUG> gradient to module.layer1.1.conv1.scores
+<DEBUG> no gradient to module.layer1.1.conv2.weight
+<DEBUG> gradient to module.layer1.1.conv2.scores
+<DEBUG> no gradient to module.layer2.0.conv1.weight
+<DEBUG> gradient to module.layer2.0.conv1.scores
+<DEBUG> no gradient to module.layer2.0.conv2.weight
+<DEBUG> gradient to module.layer2.0.conv2.scores
+<DEBUG> no gradient to module.layer2.0.shortcut.0.weight
+<DEBUG> gradient to module.layer2.0.shortcut.0.scores
+<DEBUG> no gradient to module.layer2.1.conv1.weight
+<DEBUG> gradient to module.layer2.1.conv1.scores
+<DEBUG> no gradient to module.layer2.1.conv2.weight
+<DEBUG> gradient to module.layer2.1.conv2.scores
+<DEBUG> no gradient to module.layer3.0.conv1.weight
+<DEBUG> gradient to module.layer3.0.conv1.scores
+<DEBUG> no gradient to module.layer3.0.conv2.weight
+<DEBUG> gradient to module.layer3.0.conv2.scores
+<DEBUG> no gradient to module.layer3.0.shortcut.0.weight
+<DEBUG> gradient to module.layer3.0.shortcut.0.scores
+<DEBUG> no gradient to module.layer3.1.conv1.weight
+<DEBUG> gradient to module.layer3.1.conv1.scores
+<DEBUG> no gradient to module.layer3.1.conv2.weight
+<DEBUG> gradient to module.layer3.1.conv2.scores
+<DEBUG> no gradient to module.layer4.0.conv1.weight
+<DEBUG> gradient to module.layer4.0.conv1.scores
+<DEBUG> no gradient to module.layer4.0.conv2.weight
+<DEBUG> gradient to module.layer4.0.conv2.scores
+<DEBUG> no gradient to module.layer4.0.shortcut.0.weight
+<DEBUG> gradient to module.layer4.0.shortcut.0.scores
+<DEBUG> no gradient to module.layer4.1.conv1.weight
+<DEBUG> gradient to module.layer4.1.conv1.scores
+<DEBUG> no gradient to module.layer4.1.conv2.weight
+<DEBUG> gradient to module.layer4.1.conv2.scores
+<DEBUG> no gradient to module.fc.weight
+<DEBUG> gradient to module.fc.scores
+=> Getting CIFAR10 dataset
+=> Reading YAML config from configs/smallscale/resnet18/resnet18-ukn-unsigned.yaml
+Namespace(arch='cResNet18', batch_size=256, bn_type='NonAffineBatchNorm', config='configs/smallscale/resnet18/resnet18-ukn-unsigned.yaml', conv_type='SubnetConv', data='DATA/', epochs=100, evaluate=False, first_layer_dense=False, first_layer_type=None, freeze_weights=True, init='kaiming_normal', label_smoothing=None, last_layer_dense=False, log_dir=None, low_data=1, lr=0.1, lr_policy='cosine_lr', mode='fan_in', momentum=0.9, multigpu=[0], multistep_lr_adjust=30, multistep_lr_gamma=0.1, name='cifar10', nesterov=False, no_bn_decay=False, nonlinearity='relu', num_classes=10, one_batch=False, optimizer='sgd', pretrained=None, print_freq=10, prune_rate=0.3, random_subnet=False, resume='', save_every=-1, scale_fan=False, score_init_constant=None, seed=None, set='CIFAR10', start_epoch=None, trainer='default', warmup_length=0, weight_decay=0.0005, width_mult=1.0, workers=4)
+=> Using trainer from trainers.default
+=> Creating model 'cResNet18'
+==> Conv Type: SubnetConv
+==> BN Type: NonAffineBatchNorm
+==> Building first layer with <class 'utils.conv_type.SubnetConv'>
+==> Setting prune rate of network to 0.3
+==> Setting prune rate of conv1 to 0.3
+==> Setting prune rate of layer1.0.conv1 to 0.3
+==> Setting prune rate of layer1.0.conv2 to 0.3
+==> Setting prune rate of layer1.1.conv1 to 0.3
+==> Setting prune rate of layer1.1.conv2 to 0.3
+==> Setting prune rate of layer2.0.conv1 to 0.3
+==> Setting prune rate of layer2.0.conv2 to 0.3
+==> Setting prune rate of layer2.0.shortcut.0 to 0.3
+==> Setting prune rate of layer2.1.conv1 to 0.3
+==> Setting prune rate of layer2.1.conv2 to 0.3
+==> Setting prune rate of layer3.0.conv1 to 0.3
+==> Setting prune rate of layer3.0.conv2 to 0.3
+==> Setting prune rate of layer3.0.shortcut.0 to 0.3
+==> Setting prune rate of layer3.1.conv1 to 0.3
+==> Setting prune rate of layer3.1.conv2 to 0.3
+==> Setting prune rate of layer4.0.conv1 to 0.3
+==> Setting prune rate of layer4.0.conv2 to 0.3
+==> Setting prune rate of layer4.0.shortcut.0 to 0.3
+==> Setting prune rate of layer4.1.conv1 to 0.3
+==> Setting prune rate of layer4.1.conv2 to 0.3
+==> Setting prune rate of fc to 0.3
+=> Rough estimate model params 7815036
+=> Freezing model weights
+==> No gradient to conv1.weight
+==> No gradient to layer1.0.conv1.weight
+==> No gradient to layer1.0.conv2.weight
+==> No gradient to layer1.1.conv1.weight
+==> No gradient to layer1.1.conv2.weight
+==> No gradient to layer2.0.conv1.weight
+==> No gradient to layer2.0.conv2.weight
+==> No gradient to layer2.0.shortcut.0.weight
+==> No gradient to layer2.1.conv1.weight
+==> No gradient to layer2.1.conv2.weight
+==> No gradient to layer3.0.conv1.weight
+==> No gradient to layer3.0.conv2.weight
+==> No gradient to layer3.0.shortcut.0.weight
+==> No gradient to layer3.1.conv1.weight
+==> No gradient to layer3.1.conv2.weight
+==> No gradient to layer4.0.conv1.weight
+==> No gradient to layer4.0.conv2.weight
+==> No gradient to layer4.0.shortcut.0.weight
+==> No gradient to layer4.1.conv1.weight
+==> No gradient to layer4.1.conv2.weight
+==> No gradient to fc.weight
+=> Parallelizing on [0] gpus
+<DEBUG> no gradient to module.conv1.weight
+<DEBUG> gradient to module.conv1.scores
+<DEBUG> no gradient to module.layer1.0.conv1.weight
+<DEBUG> gradient to module.layer1.0.conv1.scores
+<DEBUG> no gradient to module.layer1.0.conv2.weight
+<DEBUG> gradient to module.layer1.0.conv2.scores
+<DEBUG> no gradient to module.layer1.1.conv1.weight
+<DEBUG> gradient to module.layer1.1.conv1.scores
+<DEBUG> no gradient to module.layer1.1.conv2.weight
+<DEBUG> gradient to module.layer1.1.conv2.scores
+<DEBUG> no gradient to module.layer2.0.conv1.weight
+<DEBUG> gradient to module.layer2.0.conv1.scores
+<DEBUG> no gradient to module.layer2.0.conv2.weight
+<DEBUG> gradient to module.layer2.0.conv2.scores
+<DEBUG> no gradient to module.layer2.0.shortcut.0.weight
+<DEBUG> gradient to module.layer2.0.shortcut.0.scores
+<DEBUG> no gradient to module.layer2.1.conv1.weight
+<DEBUG> gradient to module.layer2.1.conv1.scores
+<DEBUG> no gradient to module.layer2.1.conv2.weight
+<DEBUG> gradient to module.layer2.1.conv2.scores
+<DEBUG> no gradient to module.layer3.0.conv1.weight
+<DEBUG> gradient to module.layer3.0.conv1.scores
+<DEBUG> no gradient to module.layer3.0.conv2.weight
+<DEBUG> gradient to module.layer3.0.conv2.scores
+<DEBUG> no gradient to module.layer3.0.shortcut.0.weight
+<DEBUG> gradient to module.layer3.0.shortcut.0.scores
+<DEBUG> no gradient to module.layer3.1.conv1.weight
+<DEBUG> gradient to module.layer3.1.conv1.scores
+<DEBUG> no gradient to module.layer3.1.conv2.weight
+<DEBUG> gradient to module.layer3.1.conv2.scores
+<DEBUG> no gradient to module.layer4.0.conv1.weight
+<DEBUG> gradient to module.layer4.0.conv1.scores
+<DEBUG> no gradient to module.layer4.0.conv2.weight
+<DEBUG> gradient to module.layer4.0.conv2.scores
+<DEBUG> no gradient to module.layer4.0.shortcut.0.weight
+<DEBUG> gradient to module.layer4.0.shortcut.0.scores
+<DEBUG> no gradient to module.layer4.1.conv1.weight
+<DEBUG> gradient to module.layer4.1.conv1.scores
+<DEBUG> no gradient to module.layer4.1.conv2.weight
+<DEBUG> gradient to module.layer4.1.conv2.scores
+<DEBUG> no gradient to module.fc.weight
+<DEBUG> gradient to module.fc.scores
+=> Getting CIFAR10 dataset
+=> Reading YAML config from configs/smallscale/resnet18/resnet18-ukn-unsigned.yaml
+Namespace(arch='cResNet18', batch_size=256, bn_type='NonAffineBatchNorm', config='configs/smallscale/resnet18/resnet18-ukn-unsigned.yaml', conv_type='SubnetConv', data='DATA/', epochs=100, evaluate=False, first_layer_dense=False, first_layer_type=None, freeze_weights=True, init='kaiming_normal', label_smoothing=None, last_layer_dense=False, log_dir=None, low_data=1, lr=0.1, lr_policy='cosine_lr', mode='fan_in', momentum=0.9, multigpu=[0], multistep_lr_adjust=30, multistep_lr_gamma=0.1, name='cifar10', nesterov=False, no_bn_decay=False, nonlinearity='relu', num_classes=10, one_batch=False, optimizer='sgd', pretrained=None, print_freq=10, prune_rate=0.5, random_subnet=False, resume='', save_every=-1, scale_fan=False, score_init_constant=None, seed=None, set='CIFAR10', start_epoch=None, trainer='default', warmup_length=0, weight_decay=0.0005, width_mult=1.0, workers=4)
+=> Using trainer from trainers.default
+=> Creating model 'cResNet18'
+==> Conv Type: SubnetConv
+==> BN Type: NonAffineBatchNorm
+==> Building first layer with <class 'utils.conv_type.SubnetConv'>
+==> Setting prune rate of network to 0.5
+==> Setting prune rate of conv1 to 0.5
+==> Setting prune rate of layer1.0.conv1 to 0.5
+==> Setting prune rate of layer1.0.conv2 to 0.5
+==> Setting prune rate of layer1.1.conv1 to 0.5
+==> Setting prune rate of layer1.1.conv2 to 0.5
+==> Setting prune rate of layer2.0.conv1 to 0.5
+==> Setting prune rate of layer2.0.conv2 to 0.5
+==> Setting prune rate of layer2.0.shortcut.0 to 0.5
+==> Setting prune rate of layer2.1.conv1 to 0.5
+==> Setting prune rate of layer2.1.conv2 to 0.5
+==> Setting prune rate of layer3.0.conv1 to 0.5
+==> Setting prune rate of layer3.0.conv2 to 0.5
+==> Setting prune rate of layer3.0.shortcut.0 to 0.5
+==> Setting prune rate of layer3.1.conv1 to 0.5
+==> Setting prune rate of layer3.1.conv2 to 0.5
+==> Setting prune rate of layer4.0.conv1 to 0.5
+==> Setting prune rate of layer4.0.conv2 to 0.5
+==> Setting prune rate of layer4.0.shortcut.0 to 0.5
+==> Setting prune rate of layer4.1.conv1 to 0.5
+==> Setting prune rate of layer4.1.conv2 to 0.5
+==> Setting prune rate of fc to 0.5
+=> Rough estimate model params 5582176
+=> Freezing model weights
+==> No gradient to conv1.weight
+==> No gradient to layer1.0.conv1.weight
+==> No gradient to layer1.0.conv2.weight
+==> No gradient to layer1.1.conv1.weight
+==> No gradient to layer1.1.conv2.weight
+==> No gradient to layer2.0.conv1.weight
+==> No gradient to layer2.0.conv2.weight
+==> No gradient to layer2.0.shortcut.0.weight
+==> No gradient to layer2.1.conv1.weight
+==> No gradient to layer2.1.conv2.weight
+==> No gradient to layer3.0.conv1.weight
+==> No gradient to layer3.0.conv2.weight
+==> No gradient to layer3.0.shortcut.0.weight
+==> No gradient to layer3.1.conv1.weight
+==> No gradient to layer3.1.conv2.weight
+==> No gradient to layer4.0.conv1.weight
+==> No gradient to layer4.0.conv2.weight
+==> No gradient to layer4.0.shortcut.0.weight
+==> No gradient to layer4.1.conv1.weight
+==> No gradient to layer4.1.conv2.weight
+==> No gradient to fc.weight
+=> Parallelizing on [0] gpus
+<DEBUG> no gradient to module.conv1.weight
+<DEBUG> gradient to module.conv1.scores
+<DEBUG> no gradient to module.layer1.0.conv1.weight
+<DEBUG> gradient to module.layer1.0.conv1.scores
+<DEBUG> no gradient to module.layer1.0.conv2.weight
+<DEBUG> gradient to module.layer1.0.conv2.scores
+<DEBUG> no gradient to module.layer1.1.conv1.weight
+<DEBUG> gradient to module.layer1.1.conv1.scores
+<DEBUG> no gradient to module.layer1.1.conv2.weight
+<DEBUG> gradient to module.layer1.1.conv2.scores
+<DEBUG> no gradient to module.layer2.0.conv1.weight
+<DEBUG> gradient to module.layer2.0.conv1.scores
+<DEBUG> no gradient to module.layer2.0.conv2.weight
+<DEBUG> gradient to module.layer2.0.conv2.scores
+<DEBUG> no gradient to module.layer2.0.shortcut.0.weight
+<DEBUG> gradient to module.layer2.0.shortcut.0.scores
+<DEBUG> no gradient to module.layer2.1.conv1.weight
+<DEBUG> gradient to module.layer2.1.conv1.scores
+<DEBUG> no gradient to module.layer2.1.conv2.weight
+<DEBUG> gradient to module.layer2.1.conv2.scores
+<DEBUG> no gradient to module.layer3.0.conv1.weight
+<DEBUG> gradient to module.layer3.0.conv1.scores
+<DEBUG> no gradient to module.layer3.0.conv2.weight
+<DEBUG> gradient to module.layer3.0.conv2.scores
+<DEBUG> no gradient to module.layer3.0.shortcut.0.weight
+<DEBUG> gradient to module.layer3.0.shortcut.0.scores
+<DEBUG> no gradient to module.layer3.1.conv1.weight
+<DEBUG> gradient to module.layer3.1.conv1.scores
+<DEBUG> no gradient to module.layer3.1.conv2.weight
+<DEBUG> gradient to module.layer3.1.conv2.scores
+<DEBUG> no gradient to module.layer4.0.conv1.weight
+<DEBUG> gradient to module.layer4.0.conv1.scores
+<DEBUG> no gradient to module.layer4.0.conv2.weight
+<DEBUG> gradient to module.layer4.0.conv2.scores
+<DEBUG> no gradient to module.layer4.0.shortcut.0.weight
+<DEBUG> gradient to module.layer4.0.shortcut.0.scores
+<DEBUG> no gradient to module.layer4.1.conv1.weight
+<DEBUG> gradient to module.layer4.1.conv1.scores
+<DEBUG> no gradient to module.layer4.1.conv2.weight
+<DEBUG> gradient to module.layer4.1.conv2.scores
+<DEBUG> no gradient to module.fc.weight
+<DEBUG> gradient to module.fc.scores
+=> Getting CIFAR10 dataset
+=> Reading YAML config from configs/smallscale/resnet18/resnet18-ukn-unsigned.yaml
+Namespace(arch='cResNet18', batch_size=256, bn_type='NonAffineBatchNorm', config='configs/smallscale/resnet18/resnet18-ukn-unsigned.yaml', conv_type='SubnetConv', data='DATA/', epochs=100, evaluate=False, first_layer_dense=False, first_layer_type=None, freeze_weights=True, init='kaiming_normal', label_smoothing=None, last_layer_dense=False, log_dir=None, low_data=1, lr=0.1, lr_policy='cosine_lr', mode='fan_in', momentum=0.9, multigpu=[0], multistep_lr_adjust=30, multistep_lr_gamma=0.1, name='cifar10', nesterov=False, no_bn_decay=False, nonlinearity='relu', num_classes=10, one_batch=False, optimizer='sgd', pretrained=None, print_freq=10, prune_rate=0.7, random_subnet=False, resume='', save_every=-1, scale_fan=False, score_init_constant=None, seed=None, set='CIFAR10', start_epoch=None, trainer='default', warmup_length=0, weight_decay=0.0005, width_mult=1.0, workers=4)
+=> Using trainer from trainers.default
+=> Creating model 'cResNet18'
+==> Conv Type: SubnetConv
+==> BN Type: NonAffineBatchNorm
+==> Building first layer with <class 'utils.conv_type.SubnetConv'>
+==> Setting prune rate of network to 0.7
+==> Setting prune rate of conv1 to 0.7
+==> Setting prune rate of layer1.0.conv1 to 0.7
+==> Setting prune rate of layer1.0.conv2 to 0.7
+==> Setting prune rate of layer1.1.conv1 to 0.7
+==> Setting prune rate of layer1.1.conv2 to 0.7
+==> Setting prune rate of layer2.0.conv1 to 0.7
+==> Setting prune rate of layer2.0.conv2 to 0.7
+==> Setting prune rate of layer2.0.shortcut.0 to 0.7
+==> Setting prune rate of layer2.1.conv1 to 0.7
+==> Setting prune rate of layer2.1.conv2 to 0.7
+==> Setting prune rate of layer3.0.conv1 to 0.7
+==> Setting prune rate of layer3.0.conv2 to 0.7
+==> Setting prune rate of layer3.0.shortcut.0 to 0.7
+==> Setting prune rate of layer3.1.conv1 to 0.7
+==> Setting prune rate of layer3.1.conv2 to 0.7
+==> Setting prune rate of layer4.0.conv1 to 0.7
+==> Setting prune rate of layer4.0.conv2 to 0.7
+==> Setting prune rate of layer4.0.shortcut.0 to 0.7
+==> Setting prune rate of layer4.1.conv1 to 0.7
+==> Setting prune rate of layer4.1.conv2 to 0.7
+==> Setting prune rate of fc to 0.7
+=> Rough estimate model params 3349296
+=> Freezing model weights
+==> No gradient to conv1.weight
+==> No gradient to layer1.0.conv1.weight
+==> No gradient to layer1.0.conv2.weight
+==> No gradient to layer1.1.conv1.weight
+==> No gradient to layer1.1.conv2.weight
+==> No gradient to layer2.0.conv1.weight
+==> No gradient to layer2.0.conv2.weight
+==> No gradient to layer2.0.shortcut.0.weight
+==> No gradient to layer2.1.conv1.weight
+==> No gradient to layer2.1.conv2.weight
+==> No gradient to layer3.0.conv1.weight
+==> No gradient to layer3.0.conv2.weight
+==> No gradient to layer3.0.shortcut.0.weight
+==> No gradient to layer3.1.conv1.weight
+==> No gradient to layer3.1.conv2.weight
+==> No gradient to layer4.0.conv1.weight
+==> No gradient to layer4.0.conv2.weight
+==> No gradient to layer4.0.shortcut.0.weight
+==> No gradient to layer4.1.conv1.weight
+==> No gradient to layer4.1.conv2.weight
+==> No gradient to fc.weight
+=> Parallelizing on [0] gpus
+<DEBUG> no gradient to module.conv1.weight
+<DEBUG> gradient to module.conv1.scores
+<DEBUG> no gradient to module.layer1.0.conv1.weight
+<DEBUG> gradient to module.layer1.0.conv1.scores
+<DEBUG> no gradient to module.layer1.0.conv2.weight
+<DEBUG> gradient to module.layer1.0.conv2.scores
+<DEBUG> no gradient to module.layer1.1.conv1.weight
+<DEBUG> gradient to module.layer1.1.conv1.scores
+<DEBUG> no gradient to module.layer1.1.conv2.weight
+<DEBUG> gradient to module.layer1.1.conv2.scores
+<DEBUG> no gradient to module.layer2.0.conv1.weight
+<DEBUG> gradient to module.layer2.0.conv1.scores
+<DEBUG> no gradient to module.layer2.0.conv2.weight
+<DEBUG> gradient to module.layer2.0.conv2.scores
+<DEBUG> no gradient to module.layer2.0.shortcut.0.weight
+<DEBUG> gradient to module.layer2.0.shortcut.0.scores
+<DEBUG> no gradient to module.layer2.1.conv1.weight
+<DEBUG> gradient to module.layer2.1.conv1.scores
+<DEBUG> no gradient to module.layer2.1.conv2.weight
+<DEBUG> gradient to module.layer2.1.conv2.scores
+<DEBUG> no gradient to module.layer3.0.conv1.weight
+<DEBUG> gradient to module.layer3.0.conv1.scores
+<DEBUG> no gradient to module.layer3.0.conv2.weight
+<DEBUG> gradient to module.layer3.0.conv2.scores
+<DEBUG> no gradient to module.layer3.0.shortcut.0.weight
+<DEBUG> gradient to module.layer3.0.shortcut.0.scores
+<DEBUG> no gradient to module.layer3.1.conv1.weight
+<DEBUG> gradient to module.layer3.1.conv1.scores
+<DEBUG> no gradient to module.layer3.1.conv2.weight
+<DEBUG> gradient to module.layer3.1.conv2.scores
+<DEBUG> no gradient to module.layer4.0.conv1.weight
+<DEBUG> gradient to module.layer4.0.conv1.scores
+<DEBUG> no gradient to module.layer4.0.conv2.weight
+<DEBUG> gradient to module.layer4.0.conv2.scores
+<DEBUG> no gradient to module.layer4.0.shortcut.0.weight
+<DEBUG> gradient to module.layer4.0.shortcut.0.scores
+<DEBUG> no gradient to module.layer4.1.conv1.weight
+<DEBUG> gradient to module.layer4.1.conv1.scores
+<DEBUG> no gradient to module.layer4.1.conv2.weight
+<DEBUG> gradient to module.layer4.1.conv2.scores
+<DEBUG> no gradient to module.fc.weight
+<DEBUG> gradient to module.fc.scores
+=> Getting CIFAR10 dataset
+=> Reading YAML config from configs/smallscale/resnet18/resnet18-ukn-unsigned.yaml
+Namespace(arch='cResNet18', batch_size=256, bn_type='NonAffineBatchNorm', config='configs/smallscale/resnet18/resnet18-ukn-unsigned.yaml', conv_type='SubnetConv', data='DATA/', epochs=100, evaluate=False, first_layer_dense=False, first_layer_type=None, freeze_weights=True, init='kaiming_normal', label_smoothing=None, last_layer_dense=False, log_dir=None, low_data=1, lr=0.1, lr_policy='cosine_lr', mode='fan_in', momentum=0.9, multigpu=[0], multistep_lr_adjust=30, multistep_lr_gamma=0.1, name='cifar10', nesterov=False, no_bn_decay=False, nonlinearity='relu', num_classes=10, one_batch=False, optimizer='sgd', pretrained=None, print_freq=10, prune_rate=0.9, random_subnet=False, resume='', save_every=-1, scale_fan=False, score_init_constant=None, seed=None, set='CIFAR10', start_epoch=None, trainer='default', warmup_length=0, weight_decay=0.0005, width_mult=1.0, workers=4)
+=> Using trainer from trainers.default
+=> Creating model 'cResNet18'
+==> Conv Type: SubnetConv
+==> BN Type: NonAffineBatchNorm
+==> Building first layer with <class 'utils.conv_type.SubnetConv'>
+==> Setting prune rate of network to 0.9
+==> Setting prune rate of conv1 to 0.9
+==> Setting prune rate of layer1.0.conv1 to 0.9
+==> Setting prune rate of layer1.0.conv2 to 0.9
+==> Setting prune rate of layer1.1.conv1 to 0.9
+==> Setting prune rate of layer1.1.conv2 to 0.9
+==> Setting prune rate of layer2.0.conv1 to 0.9
+==> Setting prune rate of layer2.0.conv2 to 0.9
+==> Setting prune rate of layer2.0.shortcut.0 to 0.9
+==> Setting prune rate of layer2.1.conv1 to 0.9
+==> Setting prune rate of layer2.1.conv2 to 0.9
+==> Setting prune rate of layer3.0.conv1 to 0.9
+==> Setting prune rate of layer3.0.conv2 to 0.9
+==> Setting prune rate of layer3.0.shortcut.0 to 0.9
+==> Setting prune rate of layer3.1.conv1 to 0.9
+==> Setting prune rate of layer3.1.conv2 to 0.9
+==> Setting prune rate of layer4.0.conv1 to 0.9
+==> Setting prune rate of layer4.0.conv2 to 0.9
+==> Setting prune rate of layer4.0.shortcut.0 to 0.9
+==> Setting prune rate of layer4.1.conv1 to 0.9
+==> Setting prune rate of layer4.1.conv2 to 0.9
+==> Setting prune rate of fc to 0.9
+=> Rough estimate model params 1116424
+=> Freezing model weights
+==> No gradient to conv1.weight
+==> No gradient to layer1.0.conv1.weight
+==> No gradient to layer1.0.conv2.weight
+==> No gradient to layer1.1.conv1.weight
+==> No gradient to layer1.1.conv2.weight
+==> No gradient to layer2.0.conv1.weight
+==> No gradient to layer2.0.conv2.weight
+==> No gradient to layer2.0.shortcut.0.weight
+==> No gradient to layer2.1.conv1.weight
+==> No gradient to layer2.1.conv2.weight
+==> No gradient to layer3.0.conv1.weight
+==> No gradient to layer3.0.conv2.weight
+==> No gradient to layer3.0.shortcut.0.weight
+==> No gradient to layer3.1.conv1.weight
+==> No gradient to layer3.1.conv2.weight
+==> No gradient to layer4.0.conv1.weight
+==> No gradient to layer4.0.conv2.weight
+==> No gradient to layer4.0.shortcut.0.weight
+==> No gradient to layer4.1.conv1.weight
+==> No gradient to layer4.1.conv2.weight
+==> No gradient to fc.weight
+=> Parallelizing on [0] gpus
+<DEBUG> no gradient to module.conv1.weight
+<DEBUG> gradient to module.conv1.scores
+<DEBUG> no gradient to module.layer1.0.conv1.weight
+<DEBUG> gradient to module.layer1.0.conv1.scores
+<DEBUG> no gradient to module.layer1.0.conv2.weight
+<DEBUG> gradient to module.layer1.0.conv2.scores
+<DEBUG> no gradient to module.layer1.1.conv1.weight
+<DEBUG> gradient to module.layer1.1.conv1.scores
+<DEBUG> no gradient to module.layer1.1.conv2.weight
+<DEBUG> gradient to module.layer1.1.conv2.scores
+<DEBUG> no gradient to module.layer2.0.conv1.weight
+<DEBUG> gradient to module.layer2.0.conv1.scores
+<DEBUG> no gradient to module.layer2.0.conv2.weight
+<DEBUG> gradient to module.layer2.0.conv2.scores
+<DEBUG> no gradient to module.layer2.0.shortcut.0.weight
+<DEBUG> gradient to module.layer2.0.shortcut.0.scores
+<DEBUG> no gradient to module.layer2.1.conv1.weight
+<DEBUG> gradient to module.layer2.1.conv1.scores
+<DEBUG> no gradient to module.layer2.1.conv2.weight
+<DEBUG> gradient to module.layer2.1.conv2.scores
+<DEBUG> no gradient to module.layer3.0.conv1.weight
+<DEBUG> gradient to module.layer3.0.conv1.scores
+<DEBUG> no gradient to module.layer3.0.conv2.weight
+<DEBUG> gradient to module.layer3.0.conv2.scores
+<DEBUG> no gradient to module.layer3.0.shortcut.0.weight
+<DEBUG> gradient to module.layer3.0.shortcut.0.scores
+<DEBUG> no gradient to module.layer3.1.conv1.weight
+<DEBUG> gradient to module.layer3.1.conv1.scores
+<DEBUG> no gradient to module.layer3.1.conv2.weight
+<DEBUG> gradient to module.layer3.1.conv2.scores
+<DEBUG> no gradient to module.layer4.0.conv1.weight
+<DEBUG> gradient to module.layer4.0.conv1.scores
+<DEBUG> no gradient to module.layer4.0.conv2.weight
+<DEBUG> gradient to module.layer4.0.conv2.scores
+<DEBUG> no gradient to module.layer4.0.shortcut.0.weight
+<DEBUG> gradient to module.layer4.0.shortcut.0.scores
+<DEBUG> no gradient to module.layer4.1.conv1.weight
+<DEBUG> gradient to module.layer4.1.conv1.scores
+<DEBUG> no gradient to module.layer4.1.conv2.weight
+<DEBUG> gradient to module.layer4.1.conv2.scores
+<DEBUG> no gradient to module.fc.weight
+<DEBUG> gradient to module.fc.scores
+=> Getting CIFAR10 dataset
