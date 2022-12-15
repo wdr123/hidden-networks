@@ -6,9 +6,9 @@ echo "Bash version ${BASH_VERSION}..."
 #SBATCH -A vision
 #SBATCH -p tier3
 #SBATCH -n 2
-#SBATCH -c 1
 #SBATCH --mem=4g
 #SBATCH --gres=gpu:a100:1
+#SBATCH -t 1-00:00:00
 
 conda activate LTH
 
