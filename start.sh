@@ -7,7 +7,7 @@
 #SBATCH -e hidden.e
 #SBATCH -o hidden.o
 #SBATCH --mem=4g
-#SBATCH --gres=gpu:a100:1
+#SBATCH --gres=gpu:v100:1
 #SBATCH -t 1-00:00:00
 
 conda activate LTH
