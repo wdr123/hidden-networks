@@ -16,5 +16,5 @@ do
   error_file=$dir/$job_name.err
 
   echo "prune_rate=${i}" $arch $dataset
-  sbatch -J $job_name -o $out_file -t 1-00:00:00 -p tier3 -e $error_file $job_file
+  sbatch -J $job_name -o $out_file -e $error_file $job_file
 done

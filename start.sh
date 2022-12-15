@@ -36,13 +36,13 @@ elif [ "$arch" = "resnet18" ] | [ "$dataset" = "cifar100" ]; then
 elif [ "$arch" = "resnet18" ] | [ "$dataset" = "tinyimagenet" ]; then
   for i in "${array[@]}"
   do
-    python main.py --config configs/smallscale/resnet18/resnet18-ukn-unsigned.yaml --multigpu 0 --name tinyimagenet --data DATA/ --set TinyImageNet --prune-rate $i
+    python main.py --config configs/smallscale/resnet18/resnet18-ukn-unsigned.yaml --multigpu 0 --name tinyimagenet --data DATA/imagenet --set TinyImageNet --prune-rate $i
   done
 
 elif [ "$arch" = "resnet50" ] | [ "$dataset" = "tinyimagenet" ]; then
   for i in "${array[@]}"
   do
-    python main.py --config configs/largescale/subnetonly/resnet50-ukn-unsigned.yaml --multigpu 0 --name tinyimagenet --data DATA/ --set TinyImageNet --prune-rate $i
+    python main.py --config configs/largescale/subnetonly/resnet50-ukn-unsigned.yaml --multigpu 0 --name tinyimagenet --data DATA/imagenet --set TinyImageNet --prune-rate $i
   done
 
 fi
