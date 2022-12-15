@@ -11,9 +11,9 @@ for i in "${array[@]}"
 do
   export i
   export arch="$1" dataset="$2"
-  job_name=$base_job_name-$((first))-$((second))-$((seed))
-  out_file=$dir/$base_job_name-$((seed)).out
-  error_file=$dir/$base_job_name-$((seed)).err
+  job_name=$base_job_name-$((first))-$((second))-$((i))
+  out_file=$dir/$job_name.out
+  error_file=$dir/$job_name.err
 
   echo "prune_rate=${i}" $arch $dataset
   sbatch -J $job_name -o $out_file -t 1-00:00:00 -p tier3 -e $error_file $job_file
