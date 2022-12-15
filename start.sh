@@ -1,5 +1,4 @@
 #!/bin/bash
-echo "Bash version ${BASH_VERSION}..."
 
 #SBATCH --mail-user=986739772@qq.com
 #SBATCH --mail-type=ALL
@@ -12,11 +11,12 @@ echo "Bash version ${BASH_VERSION}..."
 #SBATCH -t 1-00:00:00
 
 conda activate LTH
+echo "Bash version ${BASH_VERSION}..."
+
 
 script="$0"
 arch="$1"
 dataset="$2"
-
 
 array=(0 0.1 0.3 0.5 0.7 0.9)
 
