@@ -3,7 +3,9 @@ echo "Bash version ${BASH_VERSION}..."
 
 #SBATCH --mail-user=986739772@qq.com
 #SBATCH --mail-type=ALL
-#SBATCH -A vision -p tier3 -n 2
+#SBATCH -A vision
+#SBATCH -p tier3
+#SBATCH -n 2
 #SBATCH -c 1
 #SBATCH --mem=4g
 #SBATCH --gres=gpu:a100:1
