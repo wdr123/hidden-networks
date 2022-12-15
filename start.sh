@@ -3,6 +3,7 @@ echo "Bash version ${BASH_VERSION}..."
 
 #SBATCH --mail-user=986739772@qq.com
 #SBATCH --mail-type=ALL
+#SBATCH -J hidden
 #SBATCH -A vision -p tier3 -n 2
 #SBATCH -e hidden.e
 #SBATCH -o hidden.o
