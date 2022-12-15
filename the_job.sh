@@ -13,6 +13,7 @@ conda activate LTH
 
 
 if [ "$arch" = "resnet18" ] | [ "$dataset" = "cifar10" ]; then
+  echo $i
   python main.py --config configs/smallscale/resnet18/resnet18-ukn-unsigned.yaml --multigpu 0 --name cifar10 --data DATA/ --set CIFAR10 --prune-rate $i
 
 elif [ "$arch" = "resnet18" ] | [ "$dataset" = "cifar100" ]; then
