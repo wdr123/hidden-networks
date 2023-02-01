@@ -3,8 +3,8 @@
 
 #SBATCH --mail-user=986739772@qq.com
 #SBATCH --mail-type=ALL
-#SBATCH -A vision -p tier3 -n 8
-#SBATCH -c 2
+#SBATCH -A vision -p tier3 -n 4
+#SBATCH -c 1
 #SBATCH --mem=4g
 #SBATCH --gres=gpu:v100:1
 #SBATCH -t 1-00:00:00
