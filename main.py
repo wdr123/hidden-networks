@@ -3,6 +3,7 @@ import pathlib
 import random
 import time
 
+import numpy as np
 from torch.utils.tensorboard import SummaryWriter
 import torch
 import torch.nn as nn
@@ -70,15 +71,18 @@ def main_worker(args):
     # optionally resume from a checkpoint
     best_acc1 = 0.0
     best_acc5 = 0.0
+    best_ece = np.inf
     best_train_acc1 = 0.0
     best_train_acc5 = 0.0
+    best_train_ece = np.inf
+
 
     if args.resume:
         best_acc1 = resume(args, model, optimizer)
 
     # Data loading code
     if args.evaluate:
-        acc1, acc5 = validate(
+        acc1, acc5, ece = validate(
             data.val_loader, model, criterion, args, writer=None, epoch=args.start_epoch
         )
 
@@ -108,6 +112,7 @@ def main_worker(args):
             "state_dict": model.state_dict(),
             "best_acc1": best_acc1,
             "best_acc5": best_acc5,
+            "best_ece": best_ece,
             "best_train_acc1": best_train_acc1,
             "best_train_acc5": best_train_acc5,
             "optimizer": optimizer.state_dict(),
@@ -127,22 +132,24 @@ def main_worker(args):
 
         # train for one epoch
         start_train = time.time()
-        train_acc1, train_acc5 = train(
+        train_acc1, train_acc5, train_ece = train(
             data.train_loader, model, criterion, optimizer, epoch, args, writer=writer
         )
         train_time.update((time.time() - start_train) / 60)
 
         # evaluate on validation set
         start_validation = time.time()
-        acc1, acc5 = validate(data.val_loader, model, criterion, args, writer, epoch)
+        acc1, acc5, ece = validate(data.val_loader, model, criterion, args, writer, epoch)
         validation_time.update((time.time() - start_validation) / 60)
 
         # remember best acc@1 and save checkpoint
         is_best = acc1 > best_acc1
         best_acc1 = max(acc1, best_acc1)
         best_acc5 = max(acc5, best_acc5)
+        best_ece = min(ece, best_ece)
         best_train_acc1 = max(train_acc1, best_train_acc1)
         best_train_acc5 = max(train_acc5, best_train_acc5)
+        best_train_ece = min(train_ece, best_train_ece)
 
         save = ((epoch % args.save_every) == 0) and args.save_every > 0
         if is_best or save or epoch == args.epochs - 1:
@@ -156,11 +163,13 @@ def main_worker(args):
                     "state_dict": model.state_dict(),
                     "best_acc1": best_acc1,
                     "best_acc5": best_acc5,
+                    "best_ece": best_ece,
                     "best_train_acc1": best_train_acc1,
                     "best_train_acc5": best_train_acc5,
                     "optimizer": optimizer.state_dict(),
                     "curr_acc1": acc1,
                     "curr_acc5": acc5,
+                    "curr_ece": ece,
                 },
                 is_best,
                 filename=ckpt_base_dir / f"epoch_{epoch}.state",
@@ -201,6 +210,7 @@ def main_worker(args):
     write_result_to_csv(
         best_acc1=best_acc1,
         best_acc5=best_acc5,
+        best_ece=best_ece,
         best_train_acc1=best_train_acc1,
         best_train_acc5=best_train_acc5,
         prune_rate=args.prune_rate,
@@ -412,6 +422,7 @@ def write_result_to_csv(**kwargs):
             "Current Val Top 5, "
             "Best Val Top 1, "
             "Best Val Top 5, "
+            "Best Val ECE, "
             "Best Train Top 1, "
             "Best Train Top 5\n"
         )
@@ -429,6 +440,7 @@ def write_result_to_csv(**kwargs):
                 "{curr_acc5:.02f}, "
                 "{best_acc1:.02f}, "
                 "{best_acc5:.02f}, "
+                "{best_ece:.02f}, "
                 "{best_train_acc1:.02f}, "
                 "{best_train_acc5:.02f}\n"
             ).format(now=now, **kwargs)

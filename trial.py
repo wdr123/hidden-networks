@@ -3,27 +3,28 @@ import numpy as np
 import pickle
 import sys
 from PIL import Image
+import torch
 
-data_root = 'DATA/cifar10/CIFAR-10-C'
-
-
-corruption_list = [
-    # 'labels.npy',
-    'brightness.npy',
-    'contrast.npy',
-    'gaussian_blur.npy',
-    'gaussian_noise.npy',
-    'defocus_blur.npy',
-]
-
-
-for file_name in corruption_list:
-    file_path = os.path.join(data_root, file_name)
-    entry = np.load(file_path)
-
-    for idx, img_numpy in enumerate(entry[:10]):
-        img = Image.fromarray(img_numpy, "RGB")
-        img.save(os.path.join(data_root, 'display', file_name[:-4]+f'_{idx}.jpg'))
+# data_root = 'DATA/cifar10/CIFAR-10-C'
+#
+#
+# corruption_list = [
+#     # 'labels.npy',
+#     'brightness.npy',
+#     'contrast.npy',
+#     'gaussian_blur.npy',
+#     'gaussian_noise.npy',
+#     'defocus_blur.npy',
+# ]
+#
+#
+# for file_name in corruption_list:
+#     file_path = os.path.join(data_root, file_name)
+#     entry = np.load(file_path)
+#
+#     for idx, img_numpy in enumerate(entry[:10]):
+#         img = Image.fromarray(img_numpy, "RGB")
+#         img.save(os.path.join(data_root, 'display', file_name[:-4]+f'_{idx}.jpg'))
 
 
 # data_root = 'DATA/cifar10/cifar-10-batches-py'
@@ -48,3 +49,6 @@ for file_name in corruption_list:
 #
 #     print(type(entry['labels']))
 #     break
+
+
+print(torch.max(torch.tensor([[1,2,3,4],[1,2,3,4]]), dim=-1))

@@ -38,7 +38,58 @@ class SubnetConv(nn.Conv2d):
         super().__init__(*args, **kwargs)
 
         self.scores = nn.Parameter(torch.Tensor(self.weight.size()))
-        nn.init.kaiming_uniform_(self.scores, a=math.sqrt(5))
+        
+        if parser_args.subnet_init == "signed_constant":
+
+            fan = nn.init._calculate_correct_fan(self.scores, parser_args.mode)
+            if parser_args.scale_fan:
+                fan = fan * (1 - parser_args.prune_rate)
+            gain = nn.init.calculate_gain(parser_args.nonlinearity)
+            std = gain / math.sqrt(fan)
+            self.scores.data = self.scores.data.sign() * std
+
+        elif parser_args.subnet_init == "unsigned_constant":
+
+            fan = nn.init._calculate_correct_fan(self.scores, parser_args.mode)
+            if parser_args.scale_fan:
+                fan = fan * (1 - parser_args.prune_rate)
+
+            gain = nn.init.calculate_gain(parser_args.nonlinearity)
+            std = gain / math.sqrt(fan)
+            self.scores.data = torch.ones_like(self.scores.data) * std
+
+        elif parser_args.subnet_init == "kaiming_normal":
+
+            if parser_args.scale_fan:
+                fan = nn.init._calculate_correct_fan(self.scores, parser_args.mode)
+                fan = fan * (1 - parser_args.prune_rate)
+                gain = nn.init.calculate_gain(parser_args.nonlinearity)
+                std = gain / math.sqrt(fan)
+                with torch.no_grad():
+                    self.scores.data.normal_(0, std)
+            else:
+                nn.init.kaiming_normal_(
+                    self.scores, mode=parser_args.mode, nonlinearity=parser_args.nonlinearity
+                )
+
+        elif parser_args.subnet_init == "kaiming_uniform":
+            nn.init.kaiming_uniform_(
+                self.scores, mode=parser_args.mode, nonlinearity=parser_args.nonlinearity
+            )
+        elif parser_args.subnet_init == "xavier_normal":
+            nn.init.xavier_normal_(self.scores)
+        elif parser_args.subnet_init == "xavier_constant":
+
+            fan_in, fan_out = nn.init._calculate_fan_in_and_fan_out(self.scores)
+            std = math.sqrt(2.0 / float(fan_in + fan_out))
+            self.scores.data = self.scores.data.sign() * std
+
+        elif parser_args.subnet_init == "standard":
+
+            nn.init.kaiming_uniform_(self.scores, a=math.sqrt(5))
+
+        else:
+            raise ValueError(f"{parser_args.subnet_init} is not an initialization option!")
 
     def set_prune_rate(self, prune_rate):
         self.prune_rate = prune_rate

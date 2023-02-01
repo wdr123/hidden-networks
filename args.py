@@ -185,6 +185,9 @@ def parse_arguments():
         "--init", default="kaiming_normal", help="Weight initialization modifications"
     )
     parser.add_argument(
+        "--subnet-init", default="standard", help="Weight initialization modifications to subnet"
+    )
+    parser.add_argument(
         "--no-bn-decay", action="store_true", default=False, help="No batchnorm decay"
     )
     parser.add_argument(

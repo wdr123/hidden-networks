@@ -1,6 +1,5 @@
 import torch
 
-
 def accuracy(output, target, topk=(1,)):
     """Computes the accuracy over the k top predictions for the specified values of k"""
     with torch.no_grad():
@@ -16,3 +15,31 @@ def accuracy(output, target, topk=(1,)):
             correct_k = correct[:k].view(-1).float().sum(0, keepdim=True)
             res.append(correct_k.mul_(100.0 / batch_size))
         return res
+
+
+def eval_calibration(output, labels, M=15):
+    """
+    M: number of bins for confidence scores
+    """
+
+    logprobs = torch.nn.functional.log_softmax(output, dim=-1)
+    predictions = torch.argmax(logprobs, dim=-1)
+    confidences = torch.max(torch.exp(logprobs), dim=-1)[0]
+
+    num_Bm = torch.zeros((M,), dtype=torch.int32)
+    accs = torch.zeros((M,), dtype=torch.float32)
+    confs = torch.zeros((M,), dtype=torch.float32)
+    for m in range(M):
+        interval = [m / M, (m+1) / M]
+        Bm = torch.tensor((confidences > interval[0]) & (confidences <= interval[1])).nonzero()
+        if len(Bm) > 0:
+            acc_bin = torch.sum(predictions[Bm] == labels[Bm]) / len(Bm)
+            conf_bin = torch.mean(confidences[Bm])
+            # gather results
+            num_Bm[m] = len(Bm)
+            accs[m] = acc_bin
+            confs[m] = conf_bin
+
+    weighted_ece = torch.sum(torch.abs(accs - confs) * num_Bm / output.size(dim=0))
+
+    return weighted_ece

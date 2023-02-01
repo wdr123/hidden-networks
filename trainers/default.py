@@ -2,7 +2,7 @@ import time
 import torch
 import tqdm
 
-from utils.eval_utils import accuracy
+from utils.eval_utils import accuracy, eval_calibration
 from utils.logging import AverageMeter, ProgressMeter
 
 
@@ -15,9 +15,10 @@ def train(train_loader, model, criterion, optimizer, epoch, args, writer):
     losses = AverageMeter("Loss", ":.3f")
     top1 = AverageMeter("Acc@1", ":6.2f")
     top5 = AverageMeter("Acc@5", ":6.2f")
+    ece = AverageMeter("ECE", ":6.2f")
     progress = ProgressMeter(
         len(train_loader),
-        [batch_time, data_time, losses, top1, top5],
+        [batch_time, data_time, losses, top1, top5, ece],
         prefix=f"Epoch: [{epoch}]",
     )
 
@@ -43,11 +44,20 @@ def train(train_loader, model, criterion, optimizer, epoch, args, writer):
 
         loss = criterion(output, target)
 
-        # measure accuracy and record loss
+        # measure ece, accuracy and record loss
+        if output.size(dim=-1) == 10:
+            Bm = 3
+        elif output.size(dim=-1) == 100:
+            Bm = 10
+        else:
+            Bm = 15
+
+        weighted_ece = eval_calibration(output, target, M = Bm)
         acc1, acc5 = accuracy(output, target, topk=(1, 5))
         losses.update(loss.item(), images.size(0))
         top1.update(acc1.item(), images.size(0))
         top5.update(acc5.item(), images.size(0))
+        ece.update(weighted_ece.item(), images.size(0))
 
         # compute gradient and do SGD step
         optimizer.zero_grad()
@@ -63,7 +73,7 @@ def train(train_loader, model, criterion, optimizer, epoch, args, writer):
             progress.display(i)
             progress.write_to_tensorboard(writer, prefix="train", global_step=t)
 
-    return top1.avg, top5.avg
+    return top1.avg, top5.avg, ece.avg
 
 
 def validate(val_loader, model, criterion, args, writer, epoch):
@@ -71,6 +81,7 @@ def validate(val_loader, model, criterion, args, writer, epoch):
     losses = AverageMeter("Loss", ":.3f", write_val=False)
     top1 = AverageMeter("Acc@1", ":6.2f", write_val=False)
     top5 = AverageMeter("Acc@5", ":6.2f", write_val=False)
+    ece = AverageMeter("ECE", ":6.2f", write_val=False)
     progress = ProgressMeter(
         len(val_loader), [batch_time, losses, top1, top5], prefix="Test: "
     )
@@ -94,10 +105,19 @@ def validate(val_loader, model, criterion, args, writer, epoch):
             loss = criterion(output, target)
 
             # measure accuracy and record loss
+            if output.size(dim=-1) == 10:
+                Bm = 3
+            elif output.size(dim=-1) == 100:
+                Bm = 10
+            else:
+                Bm = 15
+
+            weighted_ece = eval_calibration(output, target, M=Bm)
             acc1, acc5 = accuracy(output, target, topk=(1, 5))
             losses.update(loss.item(), images.size(0))
             top1.update(acc1.item(), images.size(0))
             top5.update(acc5.item(), images.size(0))
+            ece.update(weighted_ece.item(), images.size(0))
 
             # measure elapsed time
             batch_time.update(time.time() - end)
@@ -111,7 +131,7 @@ def validate(val_loader, model, criterion, args, writer, epoch):
         if writer is not None:
             progress.write_to_tensorboard(writer, prefix="test", global_step=epoch)
 
-    return top1.avg, top5.avg
+    return top1.avg, top5.avg, ece.avg
 
 def modifier(args, epoch, model):
     return
