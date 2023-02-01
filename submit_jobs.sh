@@ -46,7 +46,7 @@ do
         out_file=$dir/$job_name.out
         error_file=$dir/$job_name.err
 
-        echo "prune_rate=${prune}" $arch $dataset
+        echo "prune_rate=${prune}" $arch $dataset "standard"
         sbatch -J $job_name -o $out_file -e $error_file $job_file1
       done
     done

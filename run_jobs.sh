@@ -36,7 +36,7 @@ do
       do
         export prune arch dataset
 
-        echo "prune_rate=${prune}" $arch $dataset
+        echo "prune_rate=${prune}" $arch $dataset "standard"
         bash $job_file1
       done
     done
