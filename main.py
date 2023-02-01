@@ -214,6 +214,7 @@ def main_worker(args):
         best_train_acc1=best_train_acc1,
         best_train_acc5=best_train_acc5,
         prune_rate=args.prune_rate,
+        subnet_init=args.subnet_init,
         curr_acc1=acc1,
         curr_acc5=acc5,
         base_config=args.config,
@@ -418,6 +419,7 @@ def write_result_to_csv(**kwargs):
             "Base Config, "
             "Name, "
             "Prune Rate, "
+            "Subnet Init, "
             "Current Val Top 1, "
             "Current Val Top 5, "
             "Best Val Top 1, "
@@ -435,7 +437,8 @@ def write_result_to_csv(**kwargs):
                 "{now}, "
                 "{base_config}, "
                 "{name}, "
-                "{prune_rate}, "
+                "{prune_rate:}, "
+                "{subnet_init}, "
                 "{curr_acc1:.02f}, "
                 "{curr_acc5:.02f}, "
                 "{best_acc1:.02f}, "

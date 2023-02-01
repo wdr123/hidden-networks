@@ -16,10 +16,13 @@ do
   do
     for dataset in $data_repo;
       do
-        export prune init arch dataset
+        for arch in $arch_repo;
+        do
+          export prune init arch dataset
 
-        echo "prune_rate=${prune}" $arch $dataset $subnet_init
-        bash $job_file
+          echo "prune_rate=${prune}" $arch $dataset $init
+          bash $job_file
+        done
       done
   done
 done

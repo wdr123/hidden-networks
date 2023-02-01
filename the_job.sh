@@ -14,25 +14,25 @@ conda activate LTH
 
 if [ "$dataset" = "CIFAR10" ]; then
   if [ "$arch" = "resnet18" ] && [ "$init" = "unsigned_constant" ]; then
-      python main.py --config configs/smallscale/resnet18/resnet18-usc-unsigned.yaml --multigpu 0 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch cResNet18 --prune-rate $prune
+      python main.py --config configs/smallscale/resnet18/resnet18-ukn-unsigned.yaml --multigpu 0 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch cResNet18 --prune-rate $prune
   
     elif [ "$arch" = "resnet18" ] && [ "$init" = "signed_constant" ]; then
-      python main.py --config configs/smallscale/resnet18/resnet18-sc-unsigned.yaml --multigpu 0 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch cResNet18 --prune-rate $prune
+      python main.py --config configs/smallscale/resnet18/resnet18-ukn-unsigned.yaml --multigpu 0 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch cResNet18 --prune-rate $prune
   
     elif [ "$arch" = "resnet18" ] && [ "$init" = "kaiming_normal" ]; then
-      python main.py --config configs/smallscale/resnet18/resnet18-kn-unsigned.yaml --multigpu 0 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch cResNet18 --prune-rate $prune
+      python main.py --config configs/smallscale/resnet18/resnet18-ukn-unsigned.yaml --multigpu 0 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch cResNet18 --prune-rate $prune
   
     elif [ "$arch" = "resnet18" ] && [ "$init" = "standard" ]; then
       python main.py --config configs/smallscale/resnet18/resnet18-ukn-unsigned.yaml --multigpu 0 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch cResNet18 --prune-rate $prune
   
     elif [ "$arch" = "resnet50" ] && [ "$init" = "unsigned_constant" ]; then
-      python main.py --config configs/smallscale/resnet18/resnet18-usc-unsigned.yaml --multigpu 0 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch cResNet50 --prune-rate $prune
+      python main.py --config configs/smallscale/resnet18/resnet18-ukn-unsigned.yaml --multigpu 0 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch cResNet50 --prune-rate $prune
   
     elif [ "$arch" = "resnet50" ] && [ "$init" = "signed_constant" ]; then
-      python main.py --config configs/smallscale/resnet18/resnet18-sc-unsigned.yaml --multigpu 0 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch cResNet50 --prune-rate $prune
+      python main.py --config configs/smallscale/resnet18/resnet18-ukn-unsigned.yaml --multigpu 0 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch cResNet50 --prune-rate $prune
   
     elif [ "$arch" = "resnet50" ] && [ "$init" = "kaiming_normal" ]; then
-      python main.py --config configs/smallscale/resnet18/resnet18-kn-unsigned.yaml --multigpu 0 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch cResNet50 --prune-rate $prune
+      python main.py --config configs/smallscale/resnet18/resnet18-ukn-unsigned.yaml --multigpu 0 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch cResNet50 --prune-rate $prune
   
     elif [ "$arch" = "resnet50" ] && [ "$init" = "standard" ]; then
       python main.py --config configs/smallscale/resnet18/resnet18-ukn-unsigned.yaml --multigpu 0 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch cResNet50 --prune-rate $prune
@@ -43,25 +43,25 @@ fi
 
 if [ "$dataset" = "CIFAR100" ]; then
   if [ "$arch" = "resnet18" ] && [ "$init" = "unsigned_constant" ]; then
-    python main.py --config configs/smallscale/resnet18/resnet18-usc-unsigned.yaml --multigpu 0 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch c100ResNet18 --prune-rate $prune
+    python main.py --config configs/smallscale/resnet18/resnet18-ukn-unsigned.yaml --multigpu 0 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch c100ResNet18 --prune-rate $prune
 
   elif [ "$arch" = "resnet18" ] && [ "$init" = "signed_constant" ]; then
-    python main.py --config configs/smallscale/resnet18/resnet18-sc-unsigned.yaml --multigpu 0 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch c100ResNet18 --prune-rate $prune
+    python main.py --config configs/smallscale/resnet18/resnet18-ukn-unsigned.yaml --multigpu 0 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch c100ResNet18 --prune-rate $prune
 
   elif [ "$arch" = "resnet18" ] && [ "$init" = "kaiming_normal" ]; then
-    python main.py --config configs/smallscale/resnet18/resnet18-kn-unsigned.yaml --multigpu 0 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch c100ResNet18 --prune-rate $prune
+    python main.py --config configs/smallscale/resnet18/resnet18-ukn-unsigned.yaml --multigpu 0 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch c100ResNet18 --prune-rate $prune
 
   elif [ "$arch" = "resnet18" ] && [ "$init" = "standard" ]; then
     python main.py --config configs/smallscale/resnet18/resnet18-ukn-unsigned.yaml --multigpu 0 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch c100ResNet18 --prune-rate $prune
 
   elif [ "$arch" = "resnet50" ] && [ "$init" = "unsigned_constant" ]; then
-    python main.py --config configs/smallscale/resnet18/resnet18-usc-unsigned.yaml --multigpu 0 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch c100ResNet50 --prune-rate $prune
+    python main.py --config configs/smallscale/resnet18/resnet18-ukn-unsigned.yaml --multigpu 0 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch c100ResNet50 --prune-rate $prune
 
   elif [ "$arch" = "resnet50" ] && [ "$init" = "signed_constant" ]; then
-    python main.py --config configs/smallscale/resnet18/resnet18-sc-unsigned.yaml --multigpu 0 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch c100ResNet50 --prune-rate $prune
+    python main.py --config configs/smallscale/resnet18/resnet18-ukn-unsigned.yaml --multigpu 0 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch c100ResNet50 --prune-rate $prune
 
   elif [ "$arch" = "resnet50" ] && [ "$init" = "kaiming_normal" ]; then
-    python main.py --config configs/smallscale/resnet18/resnet18-kn-unsigned.yaml --multigpu 0 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch c100ResNet50 --prune-rate $prune
+    python main.py --config configs/smallscale/resnet18/resnet18-ukn-unsigned.yaml --multigpu 0 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch c100ResNet50 --prune-rate $prune
 
   elif [ "$arch" = "resnet50" ] && [ "$init" = "standard" ]; then
     python main.py --config configs/smallscale/resnet18/resnet18-ukn-unsigned.yaml --multigpu 0 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch c100ResNet50 --prune-rate $prune

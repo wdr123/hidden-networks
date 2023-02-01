@@ -18,14 +18,17 @@ do
   do
     for dataset in $data_repo;
       do
-        export prune init arch dataset
-#        export arch="$1" dataset="$2"
-        job_name=$base_job_name-$arch-$dataset-"${prune}"
-        out_file=$dir/$job_name.out
-        error_file=$dir/$job_name.err
+      for arch in $arch_repo;
+        do
+          export prune init arch dataset
+  #        export arch="$1" dataset="$2"
+          job_name=$base_job_name-$arch-$init-$dataset-"${prune}"
+          out_file=$dir/$job_name.out
+          error_file=$dir/$job_name.err
 
-        echo "prune_rate=${prune}" $arch $dataset $subnet_init
-        sbatch -J $job_name -o $out_file -e $error_file $job_file
+          echo "prune_rate=${prune}" $arch $dataset $init
+          sbatch -J $job_name -o $out_file -e $error_file $job_file
+        done
       done
   done
 done
@@ -39,7 +42,7 @@ do
       do
         export prune arch dataset
   #        export arch="$1" dataset="$2"
-        job_name=$base_job_name-$arch-$dataset-"${prune}"
+        job_name=$base_job_name-$arch-ukn-$dataset-"${prune}"
         out_file=$dir/$job_name.out
         error_file=$dir/$job_name.err
 
