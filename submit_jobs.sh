@@ -6,7 +6,7 @@ identifier_name="egde"
 dir="op_"$identifier_name
 mkdir -p $dir
 
-subnet_init="unsigned_constant signed_constant kaiming_normal standard"
+subnet_init="unsigned_constant signed_constant kaiming_normal kaiming_uniform"
 data_repo="CIFAR10 CIFAR100"
 arch_repo="resnet18 resnet50"
 weight_kept=(0.01 0.02 0.04 0.06)
