@@ -42,7 +42,7 @@ do
       do
         export prune arch dataset
   #        export arch="$1" dataset="$2"
-        job_name=$base_job_name-$arch-ukn-$dataset-"${prune}"
+        job_name=$base_job_name-$arch-standard-$dataset-"${prune}"
         out_file=$dir/$job_name.out
         error_file=$dir/$job_name.err
 

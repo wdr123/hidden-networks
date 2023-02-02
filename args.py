@@ -112,6 +112,13 @@ def parse_arguments():
         help="use pre-trained model",
     )
     parser.add_argument(
+        "--ensemble-pretrained",
+        dest="ensemble_pretrained",
+        default=None,
+        type=list,
+        help="use pre-trained model",
+    )
+    parser.add_argument(
         "--seed", default=None, type=int, help="seed for initializing training. "
     )
     parser.add_argument(
