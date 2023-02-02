@@ -6,10 +6,10 @@
 #SBATCH -A vision -p tier3 -n 4
 #SBATCH -c 1
 #SBATCH --mem=4g
-#SBATCH --gres=gpu:a100:1
+#SBATCH --gres=gpu:v100:1
 #SBATCH -t 0-12:00:00
 
-conda activate LTH
+
 
 
 if [ "$dataset" = "CIFAR10" ]; then
