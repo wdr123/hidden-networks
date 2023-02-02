@@ -18,7 +18,7 @@ weight_decay: 0.0005
 momentum: 0.875
 batch_size: 256
 label_smoothing: 0.1
-pretrained: ['runs/resnet18-ukn-unsigned/']
+ensemble_pretrained: ['runs/resnet18-ukn-unsigned/','runs']
 
 # ===== Sparsity =========== #
 conv_type: SubnetConv
@@ -28,6 +28,7 @@ prune_rate: -1 # Override
 init: kaiming_normal
 mode: fan_in
 nonlinearity: relu
+subnet_init: standard
 
 # ===== Hardware setup ===== #
 workers: 8

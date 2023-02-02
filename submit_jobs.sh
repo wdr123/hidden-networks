@@ -1,5 +1,5 @@
 #!/bin/bash
-base_job_name="LTH_ensemble"
+base_job_name="LTH_baselearner"
 job_file="the_job.sh"
 job_file1="the_job1.sh"
 identifier_name="egde"
