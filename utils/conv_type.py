@@ -37,7 +37,7 @@ class SubnetConv(nn.Conv2d):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.scores = nn.Parameter(torch.Tensor(self.weight.size())).cuda()
+        self.scores = nn.Parameter(torch.Tensor(self.weight.size()))
         
         if parser_args.subnet_init == "signed_constant":
 

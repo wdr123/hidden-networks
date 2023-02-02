@@ -122,6 +122,12 @@ def parse_arguments():
         "--seed", default=None, type=int, help="seed for initializing training. "
     )
     parser.add_argument(
+        "--gpu",
+        default=0,
+        type=int,
+        help="Which GPUs to use for singlegpu training",
+    )
+    parser.add_argument(
         "--multigpu",
         default=None,
         type=lambda x: [int(a) for a in x.split(",")],
