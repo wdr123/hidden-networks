@@ -46,7 +46,8 @@ class SubnetConv(nn.Conv2d):
                 fan = fan * (1 - parser_args.prune_rate)
             gain = nn.init.calculate_gain(parser_args.nonlinearity)
             std = gain / math.sqrt(fan)
-            self.scores.data = self.scores.data.sign() * std
+            with torch.no_grad():
+                self.scores.data = self.scores.data.sign() * std
 
         elif parser_args.subnet_init == "unsigned_constant":
 
@@ -56,7 +57,8 @@ class SubnetConv(nn.Conv2d):
 
             gain = nn.init.calculate_gain(parser_args.nonlinearity)
             std = gain / math.sqrt(fan)
-            self.scores.data = torch.ones_like(self.scores.data) * std
+            with torch.no_grad():
+                self.scores.data = torch.ones_like(self.scores.data) * std
 
         elif parser_args.subnet_init == "kaiming_normal":
 
@@ -82,11 +84,12 @@ class SubnetConv(nn.Conv2d):
 
             fan_in, fan_out = nn.init._calculate_fan_in_and_fan_out(self.scores)
             std = math.sqrt(2.0 / float(fan_in + fan_out))
-            self.scores.data = self.scores.data.sign() * std
+            with torch.no_grad():
+                self.scores.data = self.scores.data.sign() * std
 
         elif parser_args.subnet_init == "standard":
 
-            nn.init.kaiming_uniform_(self.scores, a=math.sqrt(5))
+            nn.init.kaiming_uniform_(self.scores, a=math.sqrt(5), nonlinearity=parser_args.nonlinearity)
 
         else:
             raise ValueError(f"{parser_args.subnet_init} is not an initialization option!")
