@@ -3,7 +3,7 @@
 job_file="the_job.sh"
 job_file1="the_job1.sh"
 
-
+ensemble="False"
 subnet_init="unsigned_constant signed_constant kaiming_normal kaiming_uniform"
 data_repo="CIFAR10 CIFAR100"
 arch_repo="resnet18 resnet50"

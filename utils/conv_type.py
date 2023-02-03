@@ -70,10 +70,9 @@ class SubnetConv(nn.Conv2d):
                 with torch.no_grad():
                     self.scores.data.normal_(0, std)
             else:
-                with torch.no_grad():
-                    nn.init.kaiming_normal_(
-                        self.scores, mode=parser_args.mode, nonlinearity=parser_args.nonlinearity
-                    )
+                nn.init.kaiming_normal_(
+                    self.scores, mode=parser_args.mode, nonlinearity=parser_args.nonlinearity
+                )
 
         elif parser_args.subnet_init == "kaiming_uniform":
             nn.init.kaiming_uniform_(
@@ -90,7 +89,7 @@ class SubnetConv(nn.Conv2d):
 
         elif parser_args.subnet_init == "standard":
 
-            nn.init.kaiming_uniform_(self.scores, a=math.sqrt(5), nonlinearity=parser_args.nonlinearity)
+            nn.init.kaiming_uniform_(self.scores, a=math.sqrt(5), )
 
         else:
             raise ValueError(f"{parser_args.subnet_init} is not an initialization option!")
