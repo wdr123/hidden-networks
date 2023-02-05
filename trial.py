@@ -1,8 +1,6 @@
 import os
-import numpy as np
 import pickle
 import sys
-from PIL import Image
 import torch
 
 # data_root = 'DATA/cifar10/CIFAR-10-C'
@@ -52,3 +50,7 @@ import torch
 
 
 # print(torch.max(torch.tensor([[1,2,3,4],[1,2,3,4]]), dim=-1))
+
+a = torch.tensor([1,2,3,4])
+b = a.expand(3,2,4)
+print(len(a))

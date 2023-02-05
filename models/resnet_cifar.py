@@ -81,9 +81,9 @@ class ResNet(nn.Module):
         self.avgpool = nn.AdaptiveAvgPool2d(1)
 
         if args.last_layer_dense:
-            self.fc = nn.Conv2d(512 * block.expansion, 10, 1)
+            self.fc = nn.Conv2d(512 * block.expansion, args.num_classes, 1)
         else:
-            self.fc = builder.conv1x1(512 * block.expansion, 10)
+            self.fc = builder.conv1x1(512 * block.expansion, args.num_classes)
 
     def _make_layer(self, block, planes, num_blocks, stride):
         strides = [stride] + [1] * (num_blocks - 1)
@@ -102,6 +102,15 @@ class ResNet(nn.Module):
         out = self.layer4(out)
         out = F.avg_pool2d(out, 4)
         out = self.fc(out)
+        return out.flatten(1)
+
+    def embedding(self, x):
+        out = F.relu(self.bn1(self.conv1(x)))
+        out = self.layer1(out)
+        out = self.layer2(out)
+        out = self.layer3(out)
+        out = self.layer4(out)
+        out = F.avg_pool2d(out, 4)
         return out.flatten(1)
 
 

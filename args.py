@@ -119,6 +119,16 @@ def parse_arguments():
         help="specify ensemble pretrained model's subnet initialization ways",
     )
     parser.add_argument(
+        "--KL",
+        action="store_true",
+        help="Whether or not to use a KL divergence regularizer by leveraging previous base learners losses",
+    )
+    parser.add_argument(
+        "--L2",
+        action="store_true",
+        help="Whether or not to use a L2 distance regularizer by leveraging previous base learners losses",
+    )
+    parser.add_argument(
         "--seed", default=None, type=int, help="seed for initializing training. "
     )
     parser.add_argument(

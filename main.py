@@ -21,6 +21,7 @@ from utils.net_utils import (
     save_checkpoint,
     get_lr,
     LabelSmoothing,
+    KLoss
 )
 from utils.schedulers import get_policy
 
@@ -63,8 +64,11 @@ def main_worker(args):
     data = get_dataset(args)
     lr_policy = get_policy(args.lr_policy)(optimizer, args)
 
+
     if args.label_smoothing is None:
         criterion = nn.CrossEntropyLoss().cuda()
+    elif args.KL or args.L2:
+        criterion = KLoss()
     else:
         criterion = LabelSmoothing(smoothing=args.label_smoothing)
 
@@ -82,7 +86,7 @@ def main_worker(args):
 
     # Data loading code
     if args.evaluate:
-        acc1, acc5, ece = validate(
+        acc1, acc5, ece, _ = validate(
             data.val_loader, model, criterion, args, writer=None, epoch=args.start_epoch
         )
 
@@ -96,6 +100,7 @@ def main_worker(args):
     epoch_time = AverageMeter("epoch_time", ":.4f", write_avg=False)
     validation_time = AverageMeter("validation_time", ":.4f", write_avg=False)
     train_time = AverageMeter("train_time", ":.4f", write_avg=False)
+    evaloss_avg = AverageMeter("average_eval_loss", ":.4f", write_avg=False)
     progress_overall = ProgressMeter(
         1, [epoch_time, validation_time, train_time], prefix="Overall Timing"
     )
@@ -139,8 +144,9 @@ def main_worker(args):
 
         # evaluate on validation set
         start_validation = time.time()
-        acc1, acc5, ece = validate(data.val_loader, model, criterion, args, writer, epoch)
+        acc1, acc5, ece, loss = validate(data.val_loader, model, criterion, args, writer, epoch)
         validation_time.update((time.time() - start_validation) / 60)
+        evaloss_avg.update(loss)
 
         # remember best acc@1 and save checkpoint
         is_best = acc1 > best_acc1
@@ -221,6 +227,7 @@ def main_worker(args):
         name=args.name,
     )
 
+    (run_base_dir / "avg_evaloss.txt").write_text(str(evaloss_avg.avg))
 
 def get_trainer(args):
     print(f"=> Using trainer from trainers.{args.trainer}")

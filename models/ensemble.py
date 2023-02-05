@@ -42,18 +42,25 @@ class Ensemble(nn.Module):
     def __init__(self, arch):
         self.baseLearner = []
         self.predictions = []
+        self.embedding = []
         self.learnerCount = 0
         self.subnet_init = None
+        self.dataset = parse_args.name
+        backup = parse_args.conv_type
         parse_args.conv_type = 'FixedSubnetConv'
+        config = pathlib.Path(parse_args.config).stem
 
         if parse_args.ensemble_subnet_init is None:
             self.subnet_init = ["unsigned_constant", "signed_constant", "kaiming_normal", "kaiming_uniform"]
         else:
             self.subnet_init = parse_args.ensemble_subnet_init
 
-        config = pathlib.Path(parse_args.config).stem
-        self.arch = arch
-        self.dataset = parse_args.name
+        if arch.startswith('e'):
+            self.arch = arch[1:]
+        elif parse_args.KL:
+            self.arch = arch
+        else:
+            raise ValueError("Either KL mode or Ensemble mode please!")
 
         for idx in range(len(self.subnet_init)):
             search_dir = pathlib.Path(
@@ -63,11 +70,14 @@ class Ensemble(nn.Module):
                 self.baseLearner.append(cur_model)
                 self.learnerCount += 1
 
+        parse_args.conv_type = backup
+
     def empty(self, ):
         del self.baseLearner
         del self.predictions
         self.baseLearner = []
         self.predictions = []
+        self.embedding = []
         self.learnerCount = 0
         self.subnet_init = None
 
@@ -76,8 +86,23 @@ class Ensemble(nn.Module):
             for cur_model in self.baseLearner:
                 cur_predict = cur_model(x)
                 self.predictions.append(cur_predict)
+        else:
+            raise ValueError("leaner counter equal to 0, please add new base learner!"
+                             "")
         out = torch.max(torch.stack(self.predictions), dim=0)
         return out.flatten(1)
+
+    def embedding(self, x):
+        if self.learnerCount > 0:
+            for cur_model in self.baseLearner:
+                cur_embed = cur_model.embedding(x)
+                self.predictions.append(cur_embed)
+        else:
+            raise ValueError("leaner counter equal to 0, please add new base learner!")
+
+        out = torch.stack(self.predictions)
+        return out.detach()
+
 
 
 def ecResNet18():
