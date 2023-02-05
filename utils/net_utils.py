@@ -131,19 +131,23 @@ class KLoss(nn.Module):
         logprobs = torch.nn.functional.log_softmax(x, dim=-1)
         nll_loss = -logprobs.gather(dim=-1, index=target.unsqueeze(1))
         nll_loss = nll_loss.squeeze(1)
-        backup = embed.clone()
 
-        if parse_args.L2:
-            l2_loss = nn.MSELoss()
-        else:
-            kl_loss = nn.KLDivLoss(reduction="none")
         weights = torch.Tensor(ensemble_embed.size())
         for idx in range(self.weights.size(0)):
             weights[idx,:,:,:] = self.weights[idx]
         embed = torch.log(embed).unsqueeze(0).expand_as(ensemble_embed)
-        KL_loss = weights.detach() * kl_loss(embed, ensemble_embed.detach())
-        KL_loss = torch.mean(KL_loss.permute(1,0,2), dim=(1,2))
-        loss = nll_loss - self.regularize * KL_loss
+
+        if parse_args.L2:
+            l2_loss = nn.MSELoss(reduction="none")
+            l2_loss = weights.detach() * l2_loss(embed, ensemble_embed.detach())
+            l2_loss = torch.mean(l2_loss.permute(1, 0, 2), dim=(1, 2))
+            loss = nll_loss - self.regularize * l2_loss
+        else:
+            kl_loss = nn.KLDivLoss(reduction="none")
+            KL_loss = weights.detach() * kl_loss(embed, ensemble_embed.detach())
+            KL_loss = torch.mean(KL_loss.permute(1, 0, 2), dim=(1, 2))
+            loss = nll_loss - self.regularize * KL_loss
+        
         return loss.mean()
 
 class LabelSmoothing(nn.Module):
