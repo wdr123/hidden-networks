@@ -390,7 +390,7 @@ def get_directories(args):
     config = pathlib.Path(args.config).stem
     if args.log_dir is None:
         run_base_dir = pathlib.Path(
-            f"runs/{config}/{args.name}/prune_rate={args.prune_rate}/subnet_init={args.subnet_init}"
+            f"runs1/{config}/{args.name}/prune_rate={args.prune_rate}/subnet_init={args.subnet_init}"
         )
     else:
         run_base_dir = pathlib.Path(
