@@ -6,6 +6,8 @@ identifier_name="egde1"
 dir="op_"$identifier_name
 mkdir -p $dir
 
+
+conda activate LTH
 ensemble="False"
 ensemble_subnet_init="kaiming_uniform kaiming_normal"
 subnet_init="kaiming_uniform"
