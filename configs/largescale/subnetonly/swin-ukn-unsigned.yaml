@@ -7,7 +7,7 @@ set: ImageNet
 
 # ===== Learning Rate Policy ======== #
 optimizer: adam
-lr: 1e-4
+lr: 0.0001
 lr_policy: cosine_lr
 warmup_length: 5
 
