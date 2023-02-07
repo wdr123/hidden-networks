@@ -1,23 +1,21 @@
 # Architecture
-arch: cResNet50
+arch: vit
 
 # ===== Dataset ===== #
 data: /mnt/disk1/datasets
-set: CIFAR10
-name: baseline
+set: ImageNet
 
 # ===== Learning Rate Policy ======== #
-optimizer: sgd
-lr: 0.256
+optimizer: adam
+lr: 1e-4
 lr_policy: cosine_lr
 warmup_length: 5
 
 # ===== Network training config ===== #
-epochs: 100
-weight_decay: 0.0005
+epochs: 200
+weight_decay: 0.000030517578125
 momentum: 0.875
 batch_size: 256
-label_smoothing: 0.1
 
 # ===== Sparsity =========== #
 conv_type: SubnetConv

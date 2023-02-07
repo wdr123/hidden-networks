@@ -121,13 +121,14 @@ class KLoss(nn.Module):
 
         for idx in range(len(self.subnet_init)):
             search_dir = pathlib.Path(
-                f"{parse_args.log_dir}/{config}/{parse_args.name}/prune_rate={parse_args.prune_rate}/subnet_init={self.subnet_init[idx]}")
+                f"{parse_args.log_dir[:-3]}/{config}/{parse_args.name}/prune_rate={parse_args.prune_rate}/subnet_init={self.subnet_init[idx]}")
             if search_dir.exists():
                 losses.append(float((search_dir / "avg_evaloss.txt").read_text()))
 
         self.weights = F.normalize(torch.tensor(losses), dim=0).detach()
 
-    def forward(self, x, target, embed, ensemble_embed):
+    def forward(self, x, target, embed):
+        ensemble_embed = self.ensemble.embedding(x)
         logprobs = torch.nn.functional.log_softmax(x, dim=-1)
         nll_loss = -logprobs.gather(dim=-1, index=target.unsqueeze(1))
         nll_loss = nll_loss.squeeze(1)
@@ -149,6 +150,7 @@ class KLoss(nn.Module):
             loss = nll_loss - self.regularize * KL_loss
         
         return loss.mean()
+
 
 class LabelSmoothing(nn.Module):
     """

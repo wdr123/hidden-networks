@@ -390,7 +390,7 @@ def get_directories(args):
     config = pathlib.Path(args.config).stem
     if args.log_dir is None:
         run_base_dir = pathlib.Path(
-            f"runs1/{config}/{args.name}/prune_rate={args.prune_rate}/subnet_init={args.subnet_init}"
+            f"runs2/{config}/{args.name}/prune_rate={args.prune_rate}/subnet_init={args.subnet_init}"
         )
     else:
         run_base_dir = pathlib.Path(
@@ -418,7 +418,7 @@ def get_directories(args):
 
 
 def write_result_to_csv(**kwargs):
-    results = pathlib.Path("runs") / "results.csv"
+    results = pathlib.Path("runs2") / "results.csv"
 
     if not results.exists():
         results.write_text(

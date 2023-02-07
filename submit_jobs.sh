@@ -2,15 +2,19 @@
 base_job_name="LTH_newbase"
 job_file="the_job.sh"
 job_file1="the_job1.sh"
-identifier_name="egde"
+identifier_name="egde1"
 dir="op_"$identifier_name
 mkdir -p $dir
 
 ensemble="False"
-subnet_init="unsigned_constant signed_constant kaiming_normal kaiming_uniform"
-data_repo="CIFAR10 CIFAR100"
-arch_repo="resnet18 resnet50"
-weight_kept=(0.03 0.05 0.15)
+ensemble_subnet_init="kaiming_uniform kaiming_normal"
+subnet_init="kaiming_uniform"
+#subnet_init="kaiming_normal kaiming_uniform"
+#subnet_init="unsigned_constant signed_constant kaiming_normal kaiming_uniform"
+data_repo="CIFAR10 CIFAR100 TinyImageNet"
+arch_repo="vit swin cResNet18 cResNet50"
+#arch_repo="cResNet18 cResNet50"
+weight_kept=(0.05 0.05 0.05 0.15)
 #weight_kept1=(0.15 0.1 0.2 0.3)
 
 for prune in "${weight_kept[@]}";

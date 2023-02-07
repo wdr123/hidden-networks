@@ -42,7 +42,11 @@ def train(train_loader, model, criterion, optimizer, epoch, args, writer):
         # compute output
         output = model(images)
 
-        loss = criterion(output, target)
+        if args.KL or args.L2:
+            embed = model.embedding(images)
+            loss = criterion(output, target, embed)
+        else:
+            loss = criterion(output, target)
 
         # measure ece, accuracy and record loss
         if output.size(dim=-1) == 10:
@@ -102,7 +106,11 @@ def validate(val_loader, model, criterion, args, writer, epoch):
             # compute output
             output = model(images)
 
-            loss = criterion(output, target)
+            if args.KL or args.L2:
+                embed = model.embedding(images)
+                loss = criterion(output, target, embed)
+            else:
+                loss = criterion(output, target)
 
             # measure accuracy and record loss
             if output.size(dim=-1) == 10:

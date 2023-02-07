@@ -8,7 +8,8 @@ ensemble_subnet_init="None"
 #ensemble_subnet_init="unsigned_constant signed_constant kaiming_normal kaiming_uniform standard"
 data_repo="CIFAR10 CIFAR100"
 arch_repo="resnet18 resnet50"
-weight_kept=(0.01 0.02 0.04 0.06)
+weight_kept=(0.03)
+#weight_kept=(0.03 0.02 0.04 0.06)
 # weight_kept1=(0.05 0.1 0.2 0.3)
 
 for prune in "${weight_kept[@]}";
