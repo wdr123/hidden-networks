@@ -2,7 +2,7 @@ import os
 import pickle
 import sys
 import torch
-
+# hahaha
 # data_root = 'DATA/cifar10/CIFAR-10-C'
 #
 #
