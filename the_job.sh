@@ -40,6 +40,9 @@ else
     elif [ "$arch" = "cResNet50" ] ; then
       python main.py --config configs/smallscale/others/resnet50-ukn-unsigned.yaml --gpu 0 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch $arch --prune-rate $prune
 
+    elif [ "$arch" = "cResNet101" ] ; then
+      python main.py --config configs/smallscale/others/resnet101-ukn-unsigned.yaml --gpu 0 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch $arch --prune-rate $prune
+
     elif [ "$arch" = "vit" ] ; then
       python main.py --config configs/smallscale/others/vit-ukn-unsigned.yaml --gpu 0 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch $arch --prune-rate $prune
 
@@ -58,6 +61,9 @@ else
     elif [ "$arch" = "cResNet50" ] ; then
       python main.py --config configs/smallscale/others/resnet50-ukn-unsigned.yaml --gpu 0 --num-classes 100 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch $arch --prune-rate $prune
 
+    elif [ "$arch" = "cResNet101" ] ; then
+      python main.py --config configs/smallscale/others/resnet101-ukn-unsigned.yaml --gpu 0 --num-classes 100 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch $arch --prune-rate $prune
+
     elif [ "$arch" = "vit" ] ; then
       python main.py --config configs/smallscale/others/vit-ukn-unsigned.yaml --gpu 0 --num-classes 100 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch $arch --prune-rate $prune
 
@@ -74,6 +80,9 @@ else
 
     elif [ "$arch" = "cResNet50" ] ; then
       python main.py --config configs/largescale/subnetonly/resnet50-ukn-unsigned.yaml --gpu 0 --num-classes 1000 --subnet-init $init --name $dataset --data DATA/imagenet --set $dataset --arch $arch --prune-rate $prune
+
+    elif [ "$arch" = "cResNet101" ] ; then
+      python main.py --config configs/largescale/subnetonly/resnet101-ukn-unsigned.yaml --gpu 0 --num-classes 1000 --subnet-init $init --name $dataset --data DATA/imagenet --set $dataset --arch $arch --prune-rate $prune
 
     elif [ "$arch" = "vit" ] ; then
       python main.py --config configs/largescale/subnetonly/vit-ukn-unsigned.yaml --gpu 0 --num-classes 1000 --subnet-init $init --name $dataset --data DATA/imagenet --set $dataset --arch $arch --prune-rate $prune

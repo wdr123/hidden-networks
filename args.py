@@ -133,7 +133,7 @@ def parse_arguments():
     )
     parser.add_argument(
         "--gpu",
-        default=0,
+        default=None,
         type=int,
         help="Which GPUs to use for singlegpu training",
     )
