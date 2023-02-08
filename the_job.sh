@@ -34,7 +34,7 @@ if [ "$ensemble" = "True" ]; then
 
 else
   if [ "$dataset" = "CIFAR10" ] ; then
-    if "$arch" = "cResNet18" ] ; then
+    if [ "$arch" = "cResNet18" ] ; then
       python main.py --config configs/smallscale/resnet18/resnet18-ukn-unsigned.yaml --gpu 0 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch $arch --prune-rate $prune
 
     elif [ "$arch" = "cResNet50" ] ; then
@@ -55,7 +55,7 @@ else
 
 
   if [ "$dataset" = "CIFAR100" ]; then
-    if "$arch" = "cResNet18" ] ; then
+    if [ "$arch" = "cResNet18" ] ; then
       python main.py --config configs/smallscale/resnet18/resnet18-ukn-unsigned.yaml --gpu 0 --num-classes 100 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch $arch --prune-rate $prune
 
     elif [ "$arch" = "cResNet50" ] ; then
@@ -75,7 +75,7 @@ else
   fi
 
   if [ "$dataset" = "TinyImageNet" ]; then
-    if "$arch" = "cResNet18" ] ; then
+    if [ "$arch" = "cResNet18" ] ; then
       python main.py --config configs/largescale/subnetonly/resnet18-ukn-unsigned.yaml --gpu 0 --num-classes 1000 --subnet-init $init --name $dataset --data DATA/imagenet --set $dataset --arch $arch --prune-rate $prune
 
     elif [ "$arch" = "cResNet50" ] ; then
