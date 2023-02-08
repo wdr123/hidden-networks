@@ -1,5 +1,5 @@
 # Architecture
-arch: swin
+arch: vit
 
 # ===== Dataset ===== #
 data: /mnt/disk1/datasets

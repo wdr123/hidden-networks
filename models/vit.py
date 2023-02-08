@@ -106,8 +106,12 @@ class NonAffineBatchNorm(nn.BatchNorm2d):
         super(NonAffineBatchNorm, self).__init__(dim, affine=False)
 
 
-linear_block = SupermaskLinear
-
+if parse_args.conv_type == "DenseConv":
+    linear_block = nn.Linear
+elif parse_args.conv_type == "SubnetConv":
+    linear_block = SupermaskLinear
+else:
+    raise NotImplementedError
 
 def pair(t):
     return t if isinstance(t, tuple) else (t, t)

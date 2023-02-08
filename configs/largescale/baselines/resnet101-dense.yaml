@@ -1,5 +1,5 @@
 # Architecture
-arch: swin
+arch: ResNet101
 # ===== Dataset ===== #
 data: /mnt/disk1/datasets
 set: ImageNet

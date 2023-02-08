@@ -1,10 +1,9 @@
 # Architecture
-arch: swin
+arch: vit
 
 # ===== Dataset ===== #
 data: /mnt/disk1/datasets
 set: ImageNet
-name: baseline
 
 # ===== Learning Rate Policy ======== #
 optimizer: adam
@@ -13,10 +12,10 @@ lr_policy: cosine_lr
 warmup_length: 5
 
 # ===== Network training config ===== #
-epochs: 300
+epochs: 200
 weight_decay: 0.000030517578125
 momentum: 0.875
-batch_size: 256
+batch_size: 128
 label_smoothing: 0.1
 
 # ===== Sparsity =========== #

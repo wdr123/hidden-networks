@@ -32,6 +32,66 @@ if [ "$ensemble" = "True" ]; then
     fi
   fi
 
+elif [ "$dense" = "True" ]; then
+  if [ "$dataset" = "CIFAR10" ] ; then
+    if [ "$arch" = "cResNet18" ] ; then
+      python main.py --config configs/smallscale/resnet18/resnet18-dense.yaml --gpu 0 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch $arch --prune-rate $prune
+
+    elif [ "$arch" = "cResNet50" ] ; then
+      python main.py --config configs/smallscale/others/resnet50-dense.yaml --gpu 0 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch $arch --prune-rate $prune
+
+    elif [ "$arch" = "cResNet101" ] ; then
+      python main.py --config configs/smallscale/others/resnet101-dense.yaml --gpu 0 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch $arch --prune-rate $prune
+
+    elif [ "$arch" = "vit" ] ; then
+      python main.py --config configs/smallscale/others/vit-dense.yaml --gpu 0 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch $arch --prune-rate $prune
+
+    elif [ "$arch" = "swin" ] ; then
+      python main.py --config configs/smallscale/others/swin-dense.yaml --gpu 0 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch $arch --prune-rate $prune
+
+    fi
+
+  fi
+
+
+  if [ "$dataset" = "CIFAR100" ]; then
+    if [ "$arch" = "cResNet18" ] ; then
+      python main.py --config configs/smallscale/resnet18/resnet18-dense.yaml --gpu 0 --num-classes 100 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch $arch --prune-rate $prune
+
+    elif [ "$arch" = "cResNet50" ] ; then
+      python main.py --config configs/smallscale/others/resnet50-dense.yaml --gpu 0 --num-classes 100 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch $arch --prune-rate $prune
+
+    elif [ "$arch" = "cResNet101" ] ; then
+      python main.py --config configs/smallscale/others/resnet101-dense.yaml --gpu 0 --num-classes 100 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch $arch --prune-rate $prune
+
+    elif [ "$arch" = "vit" ] ; then
+      python main.py --config configs/smallscale/others/vit-dense.yaml --gpu 0 --num-classes 100 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch $arch --prune-rate $prune
+
+    elif [ "$arch" = "swin" ] ; then
+      python main.py --config configs/smallscale/others/swin-dense.yaml --gpu 0 --num-classes 100 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch $arch --prune-rate $prune
+
+    fi
+
+  fi
+
+  if [ "$dataset" = "TinyImageNet" ]; then
+    if [ "$arch" = "cResNet18" ] ; then
+      python main.py --config configs/largescale/baselines/resnet18-dense.yaml --gpu 0 --num-classes 1000 --subnet-init $init --name $dataset --data DATA/imagenet --set $dataset --prune-rate $prune
+
+    elif [ "$arch" = "cResNet50" ] ; then
+      python main.py --config configs/largescale/baselines/resnet50-dense.yaml --gpu 0 --num-classes 1000 --subnet-init $init --name $dataset --data DATA/imagenet --set $dataset --prune-rate $prune
+
+    elif [ "$arch" = "cResNet101" ] ; then
+      python main.py --config configs/largescale/baselines/resnet101-dense.yaml --gpu 0 --num-classes 1000 --subnet-init $init --name $dataset --data DATA/imagenet --set $dataset --prune-rate $prune
+
+    elif [ "$arch" = "vit" ] ; then
+      python main.py --config configs/largescale/baselines/vit-dense.yaml --gpu 0 --num-classes 1000 --subnet-init $init --name $dataset --data DATA/imagenet --set $dataset --prune-rate $prune
+
+    elif [ "$arch" = "swin" ] ; then
+      python main.py --config configs/largescale/baselines/swin-dense.yaml --gpu 0 --num-classes 1000 --subnet-init $init --name $dataset --data DATA/imagenet --set $dataset --prune-rate $prune
+
+    fi
+  fi
 else
   if [ "$dataset" = "CIFAR10" ] ; then
     if [ "$arch" = "cResNet18" ] ; then
