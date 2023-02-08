@@ -65,10 +65,10 @@ else
       python main.py --config configs/smallscale/others/resnet101-ukn-unsigned.yaml --gpu 0 --num-classes 100 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch $arch --prune-rate $prune
 
     elif [ "$arch" = "vit" ] ; then
-      python main.py --config configs/smallscale/others/vit-ukn-unsigned.yaml --gpu 0 --batch-size 128 --num-classes 100 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch $arch --prune-rate $prune
+      python main.py --config configs/smallscale/others/vit-ukn-unsigned.yaml --gpu 0 --num-classes 100 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch $arch --prune-rate $prune
 
     elif [ "$arch" = "swin" ] ; then
-      python main.py --config configs/smallscale/others/swin-ukn-unsigned.yaml --gpu 0 --batch-size 128 --num-classes 100 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch $arch --prune-rate $prune
+      python main.py --config configs/smallscale/others/swin-ukn-unsigned.yaml --gpu 0 --num-classes 100 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch $arch --prune-rate $prune
 
     fi
 
@@ -76,19 +76,19 @@ else
 
   if [ "$dataset" = "TinyImageNet" ]; then
     if [ "$arch" = "cResNet18" ] ; then
-      python main.py --config configs/largescale/subnetonly/resnet18-ukn-unsigned.yaml --gpu 0 --batch-size 128 --num-classes 1000 --subnet-init $init --name $dataset --data DATA/imagenet --set $dataset --prune-rate $prune
+      python main.py --config configs/largescale/subnetonly/resnet18-ukn-unsigned.yaml --gpu 0 --num-classes 1000 --subnet-init $init --name $dataset --data DATA/imagenet --set $dataset --prune-rate $prune
 
     elif [ "$arch" = "cResNet50" ] ; then
-      python main.py --config configs/largescale/subnetonly/resnet50-ukn-unsigned.yaml --gpu 0 --batch-size 128 --num-classes 1000 --subnet-init $init --name $dataset --data DATA/imagenet --set $dataset --prune-rate $prune
+      python main.py --config configs/largescale/subnetonly/resnet50-ukn-unsigned.yaml --gpu 0 --num-classes 1000 --subnet-init $init --name $dataset --data DATA/imagenet --set $dataset --prune-rate $prune
 
     elif [ "$arch" = "cResNet101" ] ; then
-      python main.py --config configs/largescale/subnetonly/resnet101-ukn-unsigned.yaml --gpu 0 --batch-size 128 --num-classes 1000 --subnet-init $init --name $dataset --data DATA/imagenet --set $dataset --prune-rate $prune
+      python main.py --config configs/largescale/subnetonly/resnet101-ukn-unsigned.yaml --gpu 0 --num-classes 1000 --subnet-init $init --name $dataset --data DATA/imagenet --set $dataset --prune-rate $prune
 
     elif [ "$arch" = "vit" ] ; then
-      python main.py --config configs/largescale/subnetonly/vit-ukn-unsigned.yaml --gpu 0 --batch-size 128 --num-classes 1000 --subnet-init $init --name $dataset --data DATA/imagenet --set $dataset --prune-rate $prune
+      python main.py --config configs/largescale/subnetonly/vit-ukn-unsigned.yaml --gpu 0 --num-classes 1000 --subnet-init $init --name $dataset --data DATA/imagenet --set $dataset --prune-rate $prune
 
     elif [ "$arch" = "swin" ] ; then
-      python main.py --config configs/largescale/subnetonly/swin-ukn-unsigned.yaml --gpu 0 --batch-size 128 --num-classes 1000 --subnet-init $init --name $dataset --data DATA/imagenet --set $dataset --prune-rate $prune
+      python main.py --config configs/largescale/subnetonly/swin-ukn-unsigned.yaml --gpu 0 --num-classes 1000 --subnet-init $init --name $dataset --data DATA/imagenet --set $dataset --prune-rate $prune
 
     fi
   fi
