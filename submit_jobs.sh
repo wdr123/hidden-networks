@@ -13,9 +13,15 @@ ensemble_subnet_init="kaiming_uniform kaiming_normal"
 subnet_init="kaiming_uniform"
 #subnet_init="kaiming_normal kaiming_uniform"
 #subnet_init="unsigned_constant signed_constant kaiming_normal kaiming_uniform"
+
 data_repo="CIFAR10 CIFAR100 TinyImageNet"
 #arch_repo="swin cResNet50 cResNet101"
-arch_repo=""
+
+#data_repo="CIFAR100"
+#data_repo="CIFAR10 CIFAR100 TinyImageNet"
+#arch_repo="vit"
+#arch_repo="vit swin cResNet50 cResNet101 cResNet18 "
+
 weight_kept=(0.05 0.05 0.05 0.15)
 #weight_kept1=(0.15 0.1 0.2 0.3)
 
