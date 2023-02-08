@@ -9,6 +9,8 @@
 #SBATCH --gres=gpu:v100:1
 #SBATCH -t 0-12:00:00
 
+conda activate LTH
+
 if [ "$ensemble" = "True" ]; then
   if [ "$dataset" = "CIFAR10" ]; then
     if [ "$arch" = "resnet18" ] && [ "$ensemble_subnet_init" = "None" ]; then
