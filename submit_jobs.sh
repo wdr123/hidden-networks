@@ -23,8 +23,8 @@ arch_repo="cResNet50 cResNet101"
 #arch_repo="vit swin cResNet50 cResNet101 cResNet18 "
 
 #weight_kept=(0.06 0.09 0.12 0.15)
-#weight_kept1=(0.15 0.1 0.2 0.3)
-weight_kept1=(1.0)
+#weight_kept=(0.15 0.1 0.2 0.3)
+weight_kept=(1.0)
 
 for prune in "${weight_kept[@]}";
 do
