@@ -31,7 +31,7 @@ class TinyImageNet:
             traindir,
             transforms.Compose(
                 [
-                    transforms.RandomResizedCrop(32), #224
+                    transforms.RandomCrop(64, padding=8), #224
                     transforms.RandomHorizontalFlip(),
                     transforms.ToTensor(),
                     normalize,
@@ -48,8 +48,6 @@ class TinyImageNet:
                 valdir,
                 transforms.Compose(
                     [
-                        transforms.Resize(40), #256
-                        transforms.CenterCrop(32), #224
                         transforms.ToTensor(),
                         normalize,
                     ]
