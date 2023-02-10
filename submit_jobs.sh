@@ -15,7 +15,7 @@ subnet_init="kaiming_uniform"
 #subnet_init="unsigned_constant signed_constant kaiming_normal kaiming_uniform"
 
 data_repo="TinyImageNet"
-arch_repo="cResNet50 cResNet101"
+arch_repo="cResNet101"
 
 #data_repo="CIFAR100"
 #data_repo="CIFAR10 CIFAR100 TinyImageNet"
