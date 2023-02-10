@@ -4,7 +4,7 @@ import pathlib
 import shutil
 import math
 from args import args as parse_args
-from models.ensemble import Ensemble
+import models
 
 import torch
 import torch.nn as nn
@@ -111,7 +111,7 @@ class KLoss(nn.Module):
 
     def __init__(self, regularize=1.0):
         self.regularize = regularize
-        self.ensemble = Ensemble(parse_args.arch)
+        self.ensemble = models.__dict__['e'+parse_args.arch]()
         if parse_args.ensemble_subnet_init is None:
             self.subnet_init = ["unsigned_constant", "signed_constant", "kaiming_normal", "kaiming_uniform"]
         else:
@@ -141,12 +141,12 @@ class KLoss(nn.Module):
         if parse_args.L2:
             l2_loss = nn.MSELoss(reduction="none")
             l2_loss = weights.detach() * l2_loss(embed, ensemble_embed.detach())
-            l2_loss = torch.mean(l2_loss.permute(1, 0, 2), dim=(1, 2))
+            l2_loss = torch.mean(l2_loss.permute(1, 0, 2), dim=(1, 2))[0]
             loss = nll_loss - self.regularize * l2_loss
         else:
             kl_loss = nn.KLDivLoss(reduction="none")
             KL_loss = weights.detach() * kl_loss(embed, ensemble_embed.detach())
-            KL_loss = torch.mean(KL_loss.permute(1, 0, 2), dim=(1, 2))
+            KL_loss = torch.mean(KL_loss.permute(1, 0, 2), dim=(1, 2))[0]
             loss = nll_loss - self.regularize * KL_loss
         
         return loss.mean()
