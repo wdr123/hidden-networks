@@ -22,9 +22,9 @@ def eval_calibration(output, labels, M=15):
     M: number of bins for confidence scores
     """
 
-    logprobs = torch.nn.functional.log_softmax(output, dim=-1)
-    predictions = torch.argmax(logprobs, dim=-1)
-    confidences = torch.max(torch.exp(logprobs), dim=-1)[0]
+    probs = torch.nn.functional.softmax(output, dim=-1)
+    predictions = torch.argmax(probs, dim=-1)
+    confidences = torch.max(probs, dim=-1)[0]
 
     num_Bm = torch.zeros((M,), dtype=torch.int32)
     accs = torch.zeros((M,), dtype=torch.float32)
@@ -40,6 +40,6 @@ def eval_calibration(output, labels, M=15):
             accs[m] = acc_bin
             confs[m] = conf_bin
 
-    weighted_ece = torch.sum(torch.abs(accs - confs) * num_Bm / output.size(dim=0))
+    weighted_ece = torch.sum(torch.abs(accs - confs) * num_Bm / output.size(dim=0)) * 100
 
     return weighted_ece

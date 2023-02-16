@@ -3,8 +3,6 @@ import pathlib
 import random
 import time
 
-import numpy as np
-from torch.utils.tensorboard import SummaryWriter
 import torch
 import torch.nn as nn
 import torch.nn.parallel
@@ -12,16 +10,14 @@ import torch.backends.cudnn as cudnn
 import torch.optim
 import torch.utils.data
 import torch.utils.data.distributed
-
 from utils.conv_type import FixedSubnetConv, SampleSubnetConv
-from utils.logging import AverageMeter, ProgressMeter
 from utils.net_utils import (
     set_model_prune_rate,
     freeze_model_weights,
     save_checkpoint,
     get_lr,
     LabelSmoothing,
-    KLoss
+    save_sample_weights
 )
 from utils.schedulers import get_policy
 
@@ -31,24 +27,42 @@ import importlib
 
 import data
 import models
+import numpy as np 
+import data as datas
 
 
 def main():
-    print(args)
 
     if args.seed is not None:
         random.seed(args.seed)
-        torch.manual_seed(args.seed)
-        torch.cuda.manual_seed(args.seed)
-        torch.cuda.manual_seed_all(args.seed)
+    args.name = args.arch+'_'+args.set
+    if args.seed is not None:
+        args.name = args.name+'_'+str(args.seed)
+    args.prune_rate = float(args.prune_rate)/100
+    if args.evaluate:
+        
+        dir_name = args.config.split('/')[-1].replace('.yml', '')
+        if'baseline' in args.config:
+            model_dir = 'runs/'+dir_name+'/'+args.name+'/prune_rate=0.0/checkpoints'
+            file_names = os.listdir(model_dir)
+        else:
+            model_dir = 'runs/'+dir_name+'/'+args.name+'/prune_rate='+str(args.prune_rate)+'/checkpoints'
+            file_names = os.listdir(model_dir)
+        print("Model directory is", model_dir, 'file names', file_names)
+        if 'epoch_199.state' in file_names:
+            args.pretrained = os.path.join(model_dir, 'epoch_199.state')
+        else:
+            args.pretrained = os.path.join(model_dir, 'model_best.pth')
+        
+            
 
     # Simply call main_worker function
     main_worker(args)
 
 
 def main_worker(args):
-    train, validate, modifier = get_trainer(args)
-
+    args.gpu = None
+    train, validate, modifier, get_output, get_weights = get_trainer(args)
 
     if args.gpu is not None:
         print("Use GPU: {} for training".format(args.gpu))
@@ -56,6 +70,10 @@ def main_worker(args):
     # create model and optimizer
     model = get_model(args)
     model = set_gpu(args, model)
+    total_param = sum(p.numel() for p in model.parameters())
+    total_train_param = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    print("Total Trainable Parameters", total_train_param, "Total Parameters", total_param)
+
 
     if args.pretrained:
         pretrained(args, model)
@@ -64,47 +82,73 @@ def main_worker(args):
     data = get_dataset(args)
     lr_policy = get_policy(args.lr_policy)(optimizer, args)
 
-
-    if args.label_smoothing is None and (not (args.KL or args.L2)):
-        criterion = nn.CrossEntropyLoss().cuda()
-    elif args.KL or args.L2:
-        criterion = KLoss().cuda()
+    if args.label_smoothing is None:
+        criterion =   nn.CrossEntropyLoss().cuda()
     else:
         criterion = LabelSmoothing(smoothing=args.label_smoothing)
 
     # optionally resume from a checkpoint
     best_acc1 = 0.0
     best_acc5 = 0.0
-    best_ece = np.inf
     best_train_acc1 = 0.0
     best_train_acc5 = 0.0
-    best_train_ece = np.inf
-
 
     if args.resume:
         best_acc1 = resume(args, model, optimizer)
 
     # Data loading code
+   
     if args.evaluate:
-        acc1, acc5, ece, _ = validate(
-            data.val_loader, model, criterion, args, writer=None, epoch=args.start_epoch
-        )
+        if 'baseline' in args.pretrained or 'dense' in args.pretrained:
+            net_type = 'dense'
+        else:
+            net_type = str(args.prune_rate)
 
+        if args.noise_type is not None:
+            if args.set=='CIFAR10':
+                val_loader = getattr(datas, 'CIFAR10C')(args).val_loader
+            elif args.set=='TinyImageNet':
+                val_loader = getattr(datas, 'TinyImageNetC')(args).val_loader
+            else:
+                print("Not recognized")
+            output_path = "outputs/output_"+args.arch+'_'+args.set+'_'+net_type+'_'+args.noise_type
+            gt_path = "outputs/gts_"+args.arch+'_'+args.set+'_'+net_type+'_'+args.noise_type
+            loss_path = "outputs/losses_"+args.arch+'_'+args.set+'_'+net_type+'_'+args.noise_type
+            if args.seed is None:
+                tail_part = ".npy"
+            else:
+                tail_part = "_"+str(args.seed)+".npy"
+                
+        else:
+            val_loader = data.val_loader
+            output_path = "outputs/output_"+args.arch+'_'+args.set+'_'+net_type
+            gt_path = "outputs/gts_"+args.arch+'_'+args.set+'_'+net_type
+            loss_path = "outputs/losses_"+args.arch+'_'+args.set+'_'+net_type
+        if args.seed is None:
+            tail_part = ".npy"
+        else:
+            tail_part = "_"+str(args.seed)+".npy"
+
+        output_path+=tail_part
+        gt_path+=tail_part
+        loss_path+=tail_part
+
+        acc1, acc5, all_gt, all_loss, all_output = get_output(
+            val_loader, model, criterion, args, writer=None, epoch=args.start_epoch
+        )
+        
+        np.save(output_path, all_output)
+        np.save(gt_path, all_gt)
+        np.save(loss_path, all_loss)
         return
 
     # Set up directories
     run_base_dir, ckpt_base_dir, log_base_dir = get_directories(args)
     args.ckpt_base_dir = ckpt_base_dir
-
-    writer = SummaryWriter(log_dir=log_base_dir)
-    epoch_time = AverageMeter("epoch_time", ":.4f", write_avg=False)
-    validation_time = AverageMeter("validation_time", ":.4f", write_avg=False)
-    train_time = AverageMeter("train_time", ":.4f", write_avg=False)
-    evaloss_avg = AverageMeter("average_eval_loss", ":.4f", write_avg=False)
-    progress_overall = ProgressMeter(
-        1, [epoch_time, validation_time, train_time], prefix="Overall Timing"
-    )
-
+    
+ 
+ 
+    
     end_epoch = time.time()
     args.start_epoch = args.start_epoch or 0
     acc1 = None
@@ -117,7 +161,6 @@ def main_worker(args):
             "state_dict": model.state_dict(),
             "best_acc1": best_acc1,
             "best_acc5": best_acc5,
-            "best_ece": best_ece,
             "best_train_acc1": best_train_acc1,
             "best_train_acc5": best_train_acc5,
             "optimizer": optimizer.state_dict(),
@@ -127,7 +170,8 @@ def main_worker(args):
         filename=ckpt_base_dir / f"initial.state",
         save=False,
     )
-
+    losses = []
+    acc1s = []
     # Start training
     for epoch in range(args.start_epoch, args.epochs):
         lr_policy(epoch, iteration=None)
@@ -137,25 +181,23 @@ def main_worker(args):
 
         # train for one epoch
         start_train = time.time()
-        train_acc1, train_acc5, train_ece = train(
-            data.train_loader, model, criterion, optimizer, epoch, args, writer=writer
+        train_acc1, train_acc5, train_loss = train(
+            data.train_loader, model, criterion, optimizer, epoch, args, writer=None
         )
-        train_time.update((time.time() - start_train) / 60)
-
+       
+        losses.append(train_loss)
+        acc1s.append(train_acc1)
         # evaluate on validation set
         start_validation = time.time()
-        acc1, acc5, ece, loss = validate(data.val_loader, model, criterion, args, writer, epoch)
-        validation_time.update((time.time() - start_validation) / 60)
-        evaloss_avg.update(loss)
+        acc1, acc5, _ = validate(data.val_loader, model, criterion, args, None, epoch)
+
 
         # remember best acc@1 and save checkpoint
         is_best = acc1 > best_acc1
         best_acc1 = max(acc1, best_acc1)
         best_acc5 = max(acc5, best_acc5)
-        best_ece = min(ece, best_ece)
         best_train_acc1 = max(train_acc1, best_train_acc1)
         best_train_acc5 = max(train_acc5, best_train_acc5)
-        best_train_ece = min(train_ece, best_train_ece)
 
         save = ((epoch % args.save_every) == 0) and args.save_every > 0
         if is_best or save or epoch == args.epochs - 1:
@@ -169,24 +211,19 @@ def main_worker(args):
                     "state_dict": model.state_dict(),
                     "best_acc1": best_acc1,
                     "best_acc5": best_acc5,
-                    "best_ece": best_ece,
                     "best_train_acc1": best_train_acc1,
                     "best_train_acc5": best_train_acc5,
                     "optimizer": optimizer.state_dict(),
                     "curr_acc1": acc1,
                     "curr_acc5": acc5,
-                    "curr_ece": ece,
                 },
                 is_best,
                 filename=ckpt_base_dir / f"epoch_{epoch}.state",
                 save=save,
             )
 
-        epoch_time.update((time.time() - end_epoch) / 60)
-        progress_overall.display(epoch)
-        progress_overall.write_to_tensorboard(
-            writer, prefix="diagnostics", global_step=epoch
-        )
+  
+        
 
         if args.conv_type == "SampleSubnetConv":
             count = 0
@@ -203,37 +240,47 @@ def main_worker(args):
                             .item()
                         )
                     pr /= 10.0
-                    writer.add_scalar("pr/{}".format(n), pr, epoch)
+                    
                     sum_pr += pr
                     count += 1
 
             args.prune_rate = sum_pr / count
-            writer.add_scalar("pr/average", args.prune_rate, epoch)
+            
 
-        writer.add_scalar("test/lr", cur_lr, epoch)
+        
         end_epoch = time.time()
+    train_infer_loader = data.train_infer_loader
+    if args.seed==1:
+        n_samples = len(train_infer_loader.dataset)
+        w_old = np.zeros(n_samples)
+        w_old[:] = 1/n_samples
+    else:
+        w_old = np.load(os.path.join('runs/global/sample_weights/'+args.arch+'_'+args.set+'_'+str(args.prune_rate)+'_'+str(args.seed)+'.npy'))
 
+    w_new = get_weights(train_infer_loader, model, args, w_old)
+    save_sample_weights(w_new, 'runs/global/sample_weights/'+args.arch+'_'+args.set+'_'+str(args.prune_rate)+'_'+str(args.seed+1)+'.npy')
+    losses = np.array(losses)
+    acc1s = np.array(acc1s)
+    np.save(os.path.join(run_base_dir, 'losses.npy'), losses)
+    np.save(os.path.join(run_base_dir, 'acc1.npy'), acc1s)
     write_result_to_csv(
         best_acc1=best_acc1,
         best_acc5=best_acc5,
-        best_ece=best_ece,
         best_train_acc1=best_train_acc1,
         best_train_acc5=best_train_acc5,
         prune_rate=args.prune_rate,
-        subnet_init=args.subnet_init,
         curr_acc1=acc1,
         curr_acc5=acc5,
         base_config=args.config,
         name=args.name,
     )
 
-    (run_base_dir / "avg_evaloss.txt").write_text(str(evaloss_avg.avg))
 
 def get_trainer(args):
     print(f"=> Using trainer from trainers.{args.trainer}")
     trainer = importlib.import_module(f"trainers.{args.trainer}")
 
-    return trainer.train, trainer.validate, trainer.modifier
+    return trainer.train, trainer.validate, trainer.modifier, trainer.get_output, trainer.get_weights
 
 
 def set_gpu(args, model):
@@ -279,13 +326,41 @@ def resume(args, model, optimizer):
     else:
         print(f"=> No checkpoint found at '{args.resume}'")
 
+def load_global_model(args, model):
+    global_model_path = 'runs/global/models/'+args.arch+'_'+args.set+'.state'
+    if os.path.isfile(global_model_path):
+        print("=> loading global model from '{}'".format(global_model_path))
+        global_model_checkpoint = torch.load(global_model_path, map_location = torch.device("cuda:{}".format(args.multigpu[0])), )["state_dict"]
+        model_state_dict = model.state_dict()
+        for k, v in global_model_checkpoint.items():
+            if k not in model_state_dict or v.size()!=model_state_dict[k].size():
+                print("IGNORE:", k)
+        global_model_checkpoint = {k:v for k, v in global_model_checkpoint.items() if (k in model_state_dict and v.size()==model_state_dict[k].size())}
+        model_state_dict.update(global_model_checkpoint)
+        model.load_state_dict(model_state_dict)
+    else:
+        # Save the initial state
+        save_checkpoint(
+            {
+                "state_dict": model.state_dict(),
+            },
+            False,
+            filename=global_model_path,
+            save=False,
+        )
+    return model 
+
+
+
+
+
 
 def pretrained(args, model):
     if os.path.isfile(args.pretrained):
         print("=> loading pretrained weights from '{}'".format(args.pretrained))
         pretrained = torch.load(
             args.pretrained,
-            map_location=torch.device("cuda:{}".format(args.gpu)),
+            map_location=torch.device("cuda:{}".format(args.multigpu[0])),
         )["state_dict"]
 
         model_state_dict = model.state_dict()
@@ -320,6 +395,7 @@ def get_model(args):
         args.first_layer_type = "DenseConv"
 
     print("=> Creating model '{}'".format(args.arch))
+
     model = models.__dict__[args.arch]()
 
     # applying sparsity to the network
@@ -330,7 +406,7 @@ def get_model(args):
     ):
         if args.prune_rate < 0:
             raise ValueError("Need to set a positive prune rate")
-
+        model = load_global_model(args, model)
         set_model_prune_rate(model, prune_rate=args.prune_rate)
         print(
             f"=> Rough estimate model params {sum(int(p.numel() * (1-args.prune_rate)) for n, p in model.named_parameters() if not n.endswith('scores'))}"
@@ -390,11 +466,11 @@ def get_directories(args):
     config = pathlib.Path(args.config).stem
     if args.log_dir is None:
         run_base_dir = pathlib.Path(
-            f"runs_dense/{config}/{args.name}/prune_rate={args.prune_rate}/subnet_init={args.subnet_init}"
+            f"runs/{config}/{args.name}/prune_rate={args.prune_rate}"
         )
     else:
         run_base_dir = pathlib.Path(
-            f"{args.log_dir}/{config}/{args.name}/prune_rate={args.prune_rate}/subnet_init={args.subnet_init}"
+            f"{args.log_dir}/{config}/{args.name}/prune_rate={args.prune_rate}"
         )
     if args.width_mult != 1.0:
         run_base_dir = run_base_dir / "width_mult={}".format(str(args.width_mult))
@@ -418,7 +494,7 @@ def get_directories(args):
 
 
 def write_result_to_csv(**kwargs):
-    results = pathlib.Path("runs_dense") / "results.csv"
+    results = pathlib.Path("runs") / "results.csv"
 
     if not results.exists():
         results.write_text(
@@ -426,12 +502,10 @@ def write_result_to_csv(**kwargs):
             "Base Config, "
             "Name, "
             "Prune Rate, "
-            "Subnet Init, "
             "Current Val Top 1, "
             "Current Val Top 5, "
             "Best Val Top 1, "
             "Best Val Top 5, "
-            "Best Val ECE, "
             "Best Train Top 1, "
             "Best Train Top 5\n"
         )
@@ -444,13 +518,11 @@ def write_result_to_csv(**kwargs):
                 "{now}, "
                 "{base_config}, "
                 "{name}, "
-                "{prune_rate:}, "
-                "{subnet_init}, "
+                "{prune_rate}, "
                 "{curr_acc1:.02f}, "
                 "{curr_acc5:.02f}, "
                 "{best_acc1:.02f}, "
                 "{best_acc5:.02f}, "
-                "{best_ece:.02f}, "
                 "{best_train_acc1:.02f}, "
                 "{best_train_acc5:.02f}\n"
             ).format(now=now, **kwargs)
@@ -459,3 +531,4 @@ def write_result_to_csv(**kwargs):
 
 if __name__ == "__main__":
     main()
+

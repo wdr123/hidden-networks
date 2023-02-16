@@ -1,3 +1,5 @@
+import sys
+
 import torch
 import torch.nn as nn
 from utils.conv_type import FixedSubnetConv
@@ -6,6 +8,25 @@ from args import args as parse_args
 import models
 import torch.backends.cudnn as cudnn
 
+
+def freeze_model_weights(model):
+    print("=> Freezing model weights")
+
+    for n, m in model.named_modules():
+        if hasattr(m, "weight") and m.weight is not None:
+            print(f"==> No gradient to {n}.weight")
+            m.weight.requires_grad = False
+            if m.weight.grad is not None:
+                print(f"==> Setting gradient of {n}.weight to None")
+                m.weight.grad = None
+
+            if hasattr(m, "bias") and m.bias is not None:
+                print(f"==> No gradient to {n}.bias")
+                m.bias.requires_grad = False
+
+                if m.bias.grad is not None:
+                    print(f"==> Setting gradient of {n}.bias to None")
+                    m.bias.grad = None
 
 def set_gpu(model):
     assert torch.cuda.is_available(), "CPU-only experiments currently unsupported"
@@ -92,15 +113,30 @@ class Ensemble(nn.Module):
         else:
             raise ValueError("Either KL mode or Ensemble mode please!")
 
+        runs_count = 0
+
         for idx in range(len(self.subnet_init)):
             search_dir = pathlib.Path(
                 f"edge/{config}/{parse_args.name}/prune_rate={parse_args.prune_rate}/subnet_init={self.subnet_init[idx]}/checkpoints")
+            if parse_args.KL or parse_args.L2:
+                search_dir = pathlib.Path(
+                    f"runs1_KL/{config}/{parse_args.name}/prune_rate={parse_args.prune_rate}/subnet_init={self.subnet_init[idx]}/checkpoints")
+            if not search_dir.exists():
+                search_dir = pathlib.Path(
+                    f"edge/{config}/{parse_args.name}/prune_rate={parse_args.prune_rate}/subnet_init=kaiming_uniform/{runs_count}/checkpoints")
+                runs_count += 1
+
             cur_model = models.__dict__[self.arch]()
             set_model_prune_rate(cur_model, parse_args.prune_rate)
             set_gpu(cur_model)
+            if parse_args.freeze_weights:
+                freeze_model_weights(cur_model)
+
             if pretrained(search_dir, cur_model):
+                cur_model.eval()
                 self.baseLearner.append(cur_model)
                 self.learnerCount += 1
+
 
         parse_args.conv_type = backup
 
@@ -114,25 +150,27 @@ class Ensemble(nn.Module):
         self.subnet_init = None
 
     def forward(self, x):
-        if self.learnerCount > 0:
-            for cur_model in self.baseLearner:
-                cur_predict = cur_model(x)
-                self.predictions.append(cur_predict)
-        else:
-            raise ValueError("leaner counter equal to 0, please add new base learner!"
-                             "")
-        out = torch.max(torch.stack(self.predictions), dim=0)[0]
+        with torch.no_grad():
+            if self.learnerCount > 0:
+                for cur_model in self.baseLearner:
+                    cur_predict = cur_model(x)
+                    self.predictions.append(cur_predict)
+            else:
+                raise ValueError("leaner counter equal to 0, please add new base learner!"
+                                 "")
+        out = torch.mean(torch.stack(self.predictions), dim=0)
         del self.predictions
         self.predictions = []
         return out.flatten(1)
 
-    def embedding(self, x):
-        if self.learnerCount > 0:
-            for cur_model in self.baseLearner:
-                cur_embed = cur_model.embedding(x)
-                self.embedding.append(cur_embed)
-        else:
-            raise ValueError("leaner counter equal to 0, please add new base learner!")
+    def get_embedding(self, x):
+        with torch.no_grad():
+            if self.learnerCount > 0:
+                for cur_model in self.baseLearner:
+                    cur_embed = cur_model.embedding(x)
+                    self.embedding.append(cur_embed)
+            else:
+                raise ValueError("leaner counter equal to 0, please add new base learner!")
 
         out = torch.stack(self.embedding)
         del self.embedding

@@ -4,7 +4,7 @@ import pathlib
 import shutil
 import math
 from args import args as parse_args
-import models
+import models.ensemble as ensemble
 
 import torch
 import torch.nn as nn
@@ -110,8 +110,9 @@ class KLoss(nn.Module):
     """
 
     def __init__(self, regularize=1.0):
+        super(KLoss, self).__init__()
         self.regularize = regularize
-        self.ensemble = models.__dict__['e'+parse_args.arch]()
+        self.ensemble = ensemble.Ensemble('e'+parse_args.arch)
         if parse_args.ensemble_subnet_init is None:
             self.subnet_init = ["unsigned_constant", "signed_constant", "kaiming_normal", "kaiming_uniform"]
         else:
@@ -121,32 +122,33 @@ class KLoss(nn.Module):
 
         for idx in range(len(self.subnet_init)):
             search_dir = pathlib.Path(
-                f"{parse_args.log_dir[:-3]}/{config}/{parse_args.name}/prune_rate={parse_args.prune_rate}/subnet_init={self.subnet_init[idx]}")
+                f"edge/{config}/{parse_args.name}/prune_rate={parse_args.prune_rate}/subnet_init={self.subnet_init[idx]}")
             if search_dir.exists():
                 losses.append(float((search_dir / "avg_evaloss.txt").read_text()))
 
         self.weights = F.normalize(torch.tensor(losses), dim=0).detach()
 
-    def forward(self, x, target, embed):
-        ensemble_embed = self.ensemble.embedding(x)
-        logprobs = torch.nn.functional.log_softmax(x, dim=-1)
+    def forward(self, x, output, target, embed):
+        ensemble_embed = torch.nn.functional.softmax(self.ensemble.get_embedding(x), dim=-1)
+        logprobs = torch.nn.functional.log_softmax(output, dim=-1)
         nll_loss = -logprobs.gather(dim=-1, index=target.unsqueeze(1))
         nll_loss = nll_loss.squeeze(1)
 
-        weights = torch.Tensor(ensemble_embed.size())
+        weights = torch.Tensor(ensemble_embed.size()).cuda()
         for idx in range(self.weights.size(0)):
-            weights[idx,:,:,:] = self.weights[idx]
-        embed = torch.log(embed).unsqueeze(0).expand_as(ensemble_embed)
+            weights[idx,:,:] = self.weights[idx]
+        embed = torch.nn.functional.log_softmax(embed, dim=-1).unsqueeze(0).expand_as(ensemble_embed)
 
         if parse_args.L2:
-            l2_loss = nn.MSELoss(reduction="none")
+            l2_loss = nn.MSELoss(reduction="none").cuda()
+            embed = torch.exp(embed)
             l2_loss = weights.detach() * l2_loss(embed, ensemble_embed.detach())
-            l2_loss = torch.mean(l2_loss.permute(1, 0, 2), dim=(1, 2))[0]
+            l2_loss = torch.mean(l2_loss.permute(1, 0, 2), dim=(1, 2))
             loss = nll_loss - self.regularize * l2_loss
         else:
-            kl_loss = nn.KLDivLoss(reduction="none")
+            kl_loss = nn.KLDivLoss(reduction="none").cuda()
             KL_loss = weights.detach() * kl_loss(embed, ensemble_embed.detach())
-            KL_loss = torch.mean(KL_loss.permute(1, 0, 2), dim=(1, 2))[0]
+            KL_loss = torch.mean(KL_loss.permute(1, 0, 2), dim=(1, 2))
             loss = nll_loss - self.regularize * KL_loss
         
         return loss.mean()

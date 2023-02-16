@@ -1,6 +1,7 @@
 import time
 import torch
 import tqdm
+import numpy as np
 
 from utils.eval_utils import accuracy, eval_calibration
 from utils.logging import AverageMeter, ProgressMeter
@@ -44,7 +45,7 @@ def train(train_loader, model, criterion, optimizer, epoch, args, writer):
 
         if args.KL or args.L2:
             embed = model.embedding(images)
-            loss = criterion(output, target, embed)
+            loss = criterion(images, output, target, embed)
         else:
             loss = criterion(output, target)
 
@@ -87,7 +88,7 @@ def validate(val_loader, model, criterion, args, writer, epoch):
     top5 = AverageMeter("Acc@5", ":6.2f", write_val=False)
     ece = AverageMeter("ECE", ":6.2f", write_val=False)
     progress = ProgressMeter(
-        len(val_loader), [batch_time, losses, top1, top5], prefix="Test: "
+        len(val_loader), [batch_time, losses, top1, top5, ece], prefix="Test: "
     )
 
     # switch to evaluate mode
@@ -119,6 +120,12 @@ def validate(val_loader, model, criterion, args, writer, epoch):
                 Bm = 10
             else:
                 Bm = 15
+
+            if i==0:
+                with open('output.npy', 'wb') as f:
+                    np.save(f, output.cpu().numpy())
+                with open('target.npy', 'wb') as f:
+                    np.save(f, target.cpu().numpy())
 
             weighted_ece = eval_calibration(output, target, M=Bm)
             acc1, acc5 = accuracy(output, target, topk=(1, 5))
