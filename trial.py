@@ -52,10 +52,18 @@ import numpy as np
 
 # print(torch.max(torch.tensor([[1,2,3,4],[1,2,3,4]]), dim=-1))
 
-with open('output.npy', 'rb') as f:
-    a = np.load(f)
+# with open('gts_cResNet50_CIFAR10_0.03_1.npy', 'rb') as f:
+#     a = np.load(f)
 
-with open('target.npy', 'rb') as f:
-    b = np.load(f)
+# with open('target.npy', 'rb') as f:
+#     b = np.load(f)
 
-print(a.shape, b.shape)
+# print(a.shape, )
+
+data_src_root = "runs/global/sample_weights"
+
+for file_name in os.listdir(data_src_root):
+    file_path = os.path.join(data_src_root, file_name)
+    if file_name.startswith("c100"):
+        dest_file_path = os.path.join(data_src_root, 'c' + file_name[4:])
+        os.rename(file_path, dest_file_path)

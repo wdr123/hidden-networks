@@ -5,6 +5,7 @@ import shutil
 import math
 from args import args as parse_args
 import models.ensemble as ensemble
+import numpy as np
 
 import torch
 import torch.nn as nn
@@ -190,3 +191,9 @@ class SubnetL1RegLoss(nn.Module):
                 l1_accum += (p*temperature).sigmoid().sum()
 
         return l1_accum
+
+def save_sample_weights(data, filename):
+    filename = pathlib.Path(filename)
+    if not filename.parent.exists():
+        os.makedirs(filename.parent)
+    np.save(filename, data)
