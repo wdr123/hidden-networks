@@ -12,7 +12,7 @@ def parse_arguments():
 
     # General Config
     parser.add_argument(
-        "--data", help="path to dataset base directory", default="/mnt/disk1/datasets"
+        "--data", help="path to dataset base directory", default="./DATA"
     )
     parser.add_argument("--optimizer", help="Which optimizer to use", default="sgd")
     parser.add_argument("--set", help="name of dataset", type=str, default="ImageNet")
@@ -25,7 +25,6 @@ def parse_arguments():
     parser.add_argument(
         "--log-dir", help="Where to save the runs. If None use ./runs", default=None
     )
-  
     parser.add_argument(
         "-j",
         "--workers",
@@ -113,7 +112,30 @@ def parse_arguments():
         help="use pre-trained model",
     )
     parser.add_argument(
+        "--ensemble-subnet-init",
+        dest="ensemble_subnet_init",
+        default=None,
+        nargs='+',
+        help="specify ensemble pretrained model's subnet initialization ways",
+    )
+    parser.add_argument(
+        "--KL",
+        action="store_true",
+        help="Whether or not to use a KL divergence regularizer by leveraging previous base learners losses",
+    )
+    parser.add_argument(
+        "--L2",
+        action="store_true",
+        help="Whether or not to use a L2 distance regularizer by leveraging previous base learners losses",
+    )
+    parser.add_argument(
         "--seed", default=None, type=int, help="seed for initializing training. "
+    )
+    parser.add_argument(
+        "--gpu",
+        default=None,
+        type=int,
+        help="Which GPUs to use for singlegpu training",
     )
     parser.add_argument(
         "--multigpu",
@@ -160,9 +182,6 @@ def parse_arguments():
         help="Whether or not to use nesterov for SGD",
     )
     parser.add_argument(
-        "--subnet-init", default="kaiming_uniform", help="Weight initialization modifications to subnet"
-    )
-    parser.add_argument(
         "--random-subnet",
         action="store_true",
         help="Whether or not to use a random subnet when fine tuning for lottery experiments",
@@ -187,6 +206,9 @@ def parse_arguments():
     parser.add_argument("--bn-type", default=None, help="BatchNorm type")
     parser.add_argument(
         "--init", default="kaiming_normal", help="Weight initialization modifications"
+    )
+    parser.add_argument(
+        "--subnet-init", default="standard", help="Weight initialization modifications to subnet"
     )
     parser.add_argument(
         "--no-bn-decay", action="store_true", default=False, help="No batchnorm decay"
@@ -217,20 +239,6 @@ def parse_arguments():
         type=float,
         default=None,
         help="Sample Baseline Subnet Init",
-    )
-
-    parser.add_argument(
-        "--ood_data", default = None, type = str, help = "type of OOD data"
-    )
-    parser.add_argument(
-        "--noise_type", default = None, type = str, help = "type of Noise for the Corruption"
-    )
-    parser.add_argument(
-        "--loss_type", default = None, type = str, help = "type Loss used", choices = ['ce_loss', 'out_dist_kl', 'mixup']
-    )
-
-    parser.add_argument(
-        "--alpha", default = 1.0, type = int, help = "Beta distribution prior"
     )
 
     args = parser.parse_args()

@@ -8,7 +8,7 @@ from args import args
 import numpy as np 
 from torch.utils.data import TensorDataset
 from torch import Tensor
-from torchvision.io import read_image 
+# from torchvision.io import read_image
 
 class CIFAR10C:
     def __init__(self, args):

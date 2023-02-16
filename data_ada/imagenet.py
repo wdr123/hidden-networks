@@ -2,17 +2,16 @@ import os
 
 import torch
 from torchvision import datasets, transforms
-from .imagenet import ImageNet
 
 import torch.multiprocessing
 
 torch.multiprocessing.set_sharing_strategy("file_system")
 
-class TinyImageNet:
+class ImageNet:
     def __init__(self, args):
-        super(ImageNet,).__init__()
+        super(ImageNet, self).__init__()
 
-        data_root = os.path.join(args.data, "tinyimagenet")
+        data_root = os.path.join(args.data, "imagenet")
 
         use_cuda = torch.cuda.is_available()
 
@@ -31,7 +30,7 @@ class TinyImageNet:
             traindir,
             transforms.Compose(
                 [
-                    transforms.RandomCrop(64, padding=8), #224
+                    transforms.RandomResizedCrop(224),
                     transforms.RandomHorizontalFlip(),
                     transforms.ToTensor(),
                     normalize,
@@ -39,8 +38,21 @@ class TinyImageNet:
             ),
         )
 
+        if args.seed==1:
+            sampler = None 
+            shuffle = True
+        else:
+            weights = np.load('runs/global/sample_weights/'+args.arch+'_'+args.set+'_'+str(args.prune_rate)+'_'+str(args.seed)+'.npy')
+            sampler = WeightedRandomSampler(weights, len(train_dataset.data), replacement = True)
+            shuffle = False
+
+        transform=transforms.Compose([transforms.ReSize(256), transforms.CenterCrop(224), transforms.ToTensor(), normalize])
+        
+       
+        train_infer_dataset = datasets.ImageFolder(traindir, transform = transform)
+
         self.train_loader = torch.utils.data.DataLoader(
-            train_dataset, batch_size=args.batch_size, shuffle=True, **kwargs
+            train_dataset, batch_size=args.batch_size, shuffle=shuffle, sampler = sampler, **kwargs
         )
 
         self.val_loader = torch.utils.data.DataLoader(
@@ -48,6 +60,8 @@ class TinyImageNet:
                 valdir,
                 transforms.Compose(
                     [
+                        transforms.Resize(256),
+                        transforms.CenterCrop(224),
                         transforms.ToTensor(),
                         normalize,
                     ]
@@ -57,3 +71,4 @@ class TinyImageNet:
             shuffle=False,
             **kwargs
         )
+        self.train_infer_loader = torch.utils.data.DataLoader(train_infer_dataset, batch_size=args.batch_size, shuffle=False, **kwargs)
