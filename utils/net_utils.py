@@ -104,6 +104,26 @@ def accumulate(model, f):
     return acc
 
 
+def Prune_Scheduler(object):
+    """
+        Prune Ratio Scheduler
+    """
+
+    def __init__(self, cur_epoch, start_epoch=0, total_epoch=200, start_prune_rate=0.5, end_prune_rate=0.95, ):
+        self.cur_epoch = cur_epoch
+        self.start_epoch = start_epoch
+        self.end_epoch = total_epoch
+        self.start_rate = start_prune_rate
+        self.end_rate = end_prune_rate
+
+    def linear(self,):
+        return ((self.cur_epoch-self.start_epoch) / (self.end_epoch-self.start_epoch) * (self.end_rate-self.start_rate) + self.start_rate)
+
+    def schedule(self, choice):
+        if choice == "linear":
+            return linear()
+        elif choice == ""
+
 
 class KLoss(nn.Module):
     """

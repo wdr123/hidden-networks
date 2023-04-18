@@ -4,8 +4,8 @@
 #SBATCH --mail-user=986739772@qq.com
 #SBATCH --mail-type=ALL
 #SBATCH -A vision -p tier3 -n 4
-#SBATCH -c 1
-#SBATCH --mem=4g
+#SBATCH -c 2
+#SBATCH --mem=8g
 #SBATCH --gres=gpu:v100:1
 #SBATCH -t 1-00:00:00
 
@@ -21,8 +21,8 @@ if [ "$dense" = "True" ]; then
     elif [ "$arch" = "cResNet50" ] ; then
       python main.py --config configs/smallscale/others/resnet50-dense.yaml --gpu 0 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch $arch --prune-rate $prune
 
-    elif [ "$arch" = "cResNet101" ] ; then
-      python main.py --config configs/smallscale/others/resnet101-dense.yaml --gpu 0 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch $arch --prune-rate $prune
+#    elif [ "$arch" = "cResNet101" ] ; then
+#      python main.py --config configs/smallscale/others/resnet101-dense.yaml --gpu 0 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch $arch --prune-rate $prune
 
     elif [ "$arch" = "vit" ] ; then
       python main.py --config configs/smallscale/others/vit-dense.yaml --gpu 0 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch $arch --prune-rate $prune
@@ -31,7 +31,6 @@ if [ "$dense" = "True" ]; then
       python main.py --config configs/smallscale/others/swin-dense.yaml --gpu 0 --subnet-init $init --name $dataset --data DATA/ --set $dataset --arch $arch --prune-rate $prune
 
     fi
-
   fi
 
 
@@ -73,6 +72,7 @@ if [ "$dense" = "True" ]; then
 
     fi
   fi
+
 else
   if [ "$dataset" = "CIFAR10" ] ; then
     if [ "$arch" = "cResNet18" ] ; then

@@ -22,7 +22,7 @@ from utils.net_utils import (
 from utils.schedulers import get_policy
 
 
-from args import args
+from args_ada import args
 import importlib
 
 import data
@@ -41,12 +41,12 @@ def main():
     args.prune_rate = float(args.prune_rate)/100
     if args.evaluate:
         
-        dir_name = args.config.split('/')[-1].replace('.yml', '')
+        dir_name = args.config.split('/')[-1].replace('.yaml', '')
         if'baseline' in args.config:
-            model_dir = 'runs/'+dir_name+'/'+args.name+'/prune_rate=0.0/checkpoints'
+            model_dir = 'runs/'+dir_name+'/'+args.name+'/prune_rate=0.0/0/checkpoints'
             file_names = os.listdir(model_dir)
         else:
-            model_dir = 'runs/'+dir_name+'/'+args.name+'/prune_rate='+str(args.prune_rate)+'/checkpoints'
+            model_dir = 'runs/'+dir_name+'/'+args.name+'/prune_rate='+str(args.prune_rate)+'/0/checkpoints'
             file_names = os.listdir(model_dir)
         print("Model directory is", model_dir, 'file names', file_names)
         if 'epoch_199.state' in file_names:

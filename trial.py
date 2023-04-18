@@ -2,7 +2,9 @@ import os
 import pickle
 import sys
 import torch
+from utils.eval_utils import accuracy, eval_calibration
 import numpy as np
+
 # hahaha
 # data_root = 'DATA/cifar10/CIFAR-10-C'
 #
@@ -57,13 +59,37 @@ import numpy as np
 
 # with open('target.npy', 'rb') as f:
 #     b = np.load(f)
+#
+# print(b.shape, )
 
-# print(a.shape, )
+# data_src_root = "runs/global/sample_weights"
+#
+# for file_name in os.listdir(data_src_root):
+#     file_path = os.path.join(data_src_root, file_name)
+#     if file_name.startswith("c100"):
+#         dest_file_path = os.path.join(data_src_root, 'c' + file_name[4:])
+#         os.rename(file_path, dest_file_path)
 
-data_src_root = "runs/global/sample_weights"
+# print(range(5))
+#
+# for i in range(4):
+#     print (i)
 
-for file_name in os.listdir(data_src_root):
-    file_path = os.path.join(data_src_root, file_name)
-    if file_name.startswith("c100"):
-        dest_file_path = os.path.join(data_src_root, 'c' + file_name[4:])
-        os.rename(file_path, dest_file_path)
+
+# output = np.load('outputs/output_cResNet101_CIFAR100_0.05_1.npy')
+# target = np.load('outputs/gts_cResNet101_CIFAR100_0.05_1.npy')
+
+# output = np.load('output1.npy')
+# target = np.load('target1.npy')
+#
+# print(output.shape, target.shape)
+#
+# target = torch.tensor(target).cuda()
+#
+# weighted_ece = eval_calibration(torch.tensor(output).cuda(), target, M=10, draw=True)
+# acc1, acc5 = accuracy(torch.tensor(output).cuda(), torch.tensor(target).cuda(), topk=(1, 5))
+# print(acc1, weighted_ece)
+
+print(23652001*0.15)
+
+print(1.790 + 0.189 +  0.193 + 0.187 +  0.312)

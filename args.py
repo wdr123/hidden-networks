@@ -105,6 +105,12 @@ def parse_arguments():
         help="evaluate model on validation set",
     )
     parser.add_argument(
+        "--adaboost",
+        dest="adaboost",
+        action="store_true",
+        help="enable adaboost ensemble",
+    )
+    parser.add_argument(
         "--pretrained",
         dest="pretrained",
         default=None,
@@ -163,8 +169,17 @@ def parse_arguments():
     parser.add_argument(
         "--prune-rate",
         default=0.0,
-        help="Amount of pruning to do during sparse training",
+        help="Amount of pruning to at first epoch do during sparse training",
         type=float,
+    )
+    parser.add_argument(
+        "--end-prune-rate",
+        default=0.0,
+        help="Amount of pruning to at last epoch during sparse training",
+        type=float,
+    )
+    parser.add_argument(
+        "--anneal-choice", default="linear", type=str, help="Prune Ratio Annealing Choices"
     )
     parser.add_argument(
         "--low-data", default=1, help="Amount of data to use", type=float
@@ -208,7 +223,7 @@ def parse_arguments():
         "--init", default="kaiming_normal", help="Weight initialization modifications"
     )
     parser.add_argument(
-        "--subnet-init", default="standard", help="Weight initialization modifications to subnet"
+        "--subnet-init", default="kaiming_uniform", help="Weight initialization modifications to subnet"
     )
     parser.add_argument(
         "--no-bn-decay", action="store_true", default=False, help="No batchnorm decay"

@@ -210,7 +210,7 @@ def parse_arguments():
         "--first-layer-type", type=str, default=None, help="Conv type of first layer"
     )
     parser.add_argument(
-        "--trainer", type=str, default="default", help="cs, ss, or standard training"
+        "--trainer", type=str, default="default_ada", help="cs, ss, or standard training"
     )
     parser.add_argument(
         "--score-init-constant",

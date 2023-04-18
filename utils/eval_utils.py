@@ -1,4 +1,6 @@
+import matplotlib.pyplot as plt
 import torch
+import numpy as np
 
 def accuracy(output, target, topk=(1,)):
     """Computes the accuracy over the k top predictions for the specified values of k"""
@@ -17,7 +19,7 @@ def accuracy(output, target, topk=(1,)):
         return res
 
 
-def eval_calibration(output, labels, M=15):
+def eval_calibration(output, labels, M=15, draw=False):
     """
     M: number of bins for confidence scores
     """
@@ -39,6 +41,10 @@ def eval_calibration(output, labels, M=15):
             num_Bm[m] = len(Bm)
             accs[m] = acc_bin
             confs[m] = conf_bin
+
+    if draw:
+        plt.bar(range(10), confs)
+        plt.show()
 
     weighted_ece = torch.sum(torch.abs(accs - confs) * num_Bm / output.size(dim=0)) * 100
 

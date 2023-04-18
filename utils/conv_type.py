@@ -76,8 +76,10 @@ class SubnetConv(nn.Conv2d):
             nn.init.kaiming_uniform_(
                 self.scores, mode=parser_args.mode, nonlinearity=parser_args.nonlinearity
             )
+
         elif parser_args.subnet_init == "xavier_normal":
             nn.init.xavier_normal_(self.scores)
+
         elif parser_args.subnet_init == "xavier_constant":
 
             fan_in, fan_out = nn.init._calculate_fan_in_and_fan_out(self.scores)

@@ -59,7 +59,10 @@ def set_model_prune_rate(model, prune_rate):
 
 def pretrained(search_dir, model):
     if search_dir.exists():
-        pretrained_path = search_dir / "model_best.pth"
+        if parse_args.adaboost:
+            pretrained_path = search_dir / "epoch_199.state"
+        else:
+            pretrained_path = search_dir / "model_best.pth"
         print("=> loading best pretrained weights from '{}'".format(pretrained_path))
         pretrained = torch.load(
             pretrained_path,
@@ -115,27 +118,43 @@ class Ensemble(nn.Module):
 
         runs_count = 0
 
-        for idx in range(len(self.subnet_init)):
-            search_dir = pathlib.Path(
-                f"edge/{config}/{parse_args.name}/prune_rate={parse_args.prune_rate}/subnet_init={self.subnet_init[idx]}/checkpoints")
-            if parse_args.KL or parse_args.L2:
+        if parse_args.adaboost:
+            for idx in range(3):
                 search_dir = pathlib.Path(
-                    f"runs1_KL/{config}/{parse_args.name}/prune_rate={parse_args.prune_rate}/subnet_init={self.subnet_init[idx]}/checkpoints")
-            if not search_dir.exists():
+                    f"runs/resnet101-ukn-unsigned/cResNet101_CIFAR100_{idx+1}/prune_rate=0.05/0/checkpoints")
+
+                cur_model = models.__dict__[self.arch]()
+                set_model_prune_rate(cur_model, parse_args.prune_rate)
+                set_gpu(cur_model)
+                if parse_args.freeze_weights:
+                    freeze_model_weights(cur_model)
+
+                if pretrained(search_dir, cur_model):
+                    cur_model.eval()
+                    self.baseLearner.append(cur_model)
+                    self.learnerCount += 1
+        else:
+            for idx in range(len(self.subnet_init)):
                 search_dir = pathlib.Path(
-                    f"edge/{config}/{parse_args.name}/prune_rate={parse_args.prune_rate}/subnet_init=kaiming_uniform/{runs_count}/checkpoints")
-                runs_count += 1
+                    f"edge/{config}/{parse_args.name}/prune_rate={parse_args.prune_rate}/subnet_init={self.subnet_init[idx]}/checkpoints")
+                if parse_args.KL or parse_args.L2:
+                    search_dir = pathlib.Path(
+                        f"runs1_KL/{config}/{parse_args.name}/prune_rate={parse_args.prune_rate}/subnet_init={self.subnet_init[idx]}/checkpoints")
+                if not search_dir.exists():
+                    search_dir = pathlib.Path(
+                        f"edge/{config}/{parse_args.name}/prune_rate={parse_args.prune_rate}/subnet_init=kaiming_uniform/{runs_count}/checkpoints")
+                    runs_count += 1
 
-            cur_model = models.__dict__[self.arch]()
-            set_model_prune_rate(cur_model, parse_args.prune_rate)
-            set_gpu(cur_model)
-            if parse_args.freeze_weights:
-                freeze_model_weights(cur_model)
+                cur_model = models.__dict__[self.arch]()
+                set_model_prune_rate(cur_model, parse_args.prune_rate)
+                set_gpu(cur_model)
+                if parse_args.freeze_weights:
+                    freeze_model_weights(cur_model)
 
-            if pretrained(search_dir, cur_model):
-                cur_model.eval()
-                self.baseLearner.append(cur_model)
-                self.learnerCount += 1
+                if pretrained(search_dir, cur_model):
+                    cur_model.eval()
+                    self.baseLearner.append(cur_model)
+                    self.learnerCount += 1
 
 
         parse_args.conv_type = backup

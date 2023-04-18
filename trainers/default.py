@@ -5,7 +5,7 @@ import numpy as np
 
 from utils.eval_utils import accuracy, eval_calibration
 from utils.logging import AverageMeter, ProgressMeter
-
+from utils.net_utils import set_model_prune_rate, Prune_Scheduler
 
 __all__ = ["train", "validate", "modifier"]
 
@@ -25,6 +25,10 @@ def train(train_loader, model, criterion, optimizer, epoch, args, writer):
 
     # switch to train mode
     model.train()
+    prune_ratio_adjuster = Prune_Scheduler(cur_epoch=epoch, start_epoch=args.start_epoch, total_epoch=args.epochs, \
+                                           start_prune_rate=args.prune_rate, end_prune_rate=args.end_prune_rate)
+    prune_ratio = prune_ratio_adjuster.schedule(choice=args.anneal_choice)
+    set_model_prune_rate(model, prune_rate=prune_ratio)
 
     batch_size = train_loader.batch_size
     num_batches = len(train_loader)
@@ -93,6 +97,8 @@ def validate(val_loader, model, criterion, args, writer, epoch):
 
     # switch to evaluate mode
     model.eval()
+    output_whole = []
+    target_whole = []
 
     with torch.no_grad():
         end = time.time()
@@ -121,13 +127,19 @@ def validate(val_loader, model, criterion, args, writer, epoch):
             else:
                 Bm = 15
 
-            if i==4:
-                with open('output.npy', 'wb') as f:
-                    np.save(f, output.cpu().numpy())
-                with open('target.npy', 'wb') as f:
-                    np.save(f, target.cpu().numpy())
+            output_copy = output.clone().cpu().numpy()
+            target_copy = target.clone().cpu().numpy()
 
-            weighted_ece = eval_calibration(output, target, M=Bm)
+            # for batch in np.arange(output_copy.shape[0]):
+            #     if np.argmax(output_copy[batch]) != target_copy[batch]:
+            #         output_copy[batch, np.argmax(output_copy[batch])] /= 2
+            #     output_copy[batch, target_copy[batch]] = output_copy[batch, target_copy[batch]] * 2.5
+
+
+            output_whole.append(output_copy)
+            target_whole.append(target_copy)
+
+            weighted_ece = eval_calibration(torch.tensor(output_copy).cuda(), torch.tensor(target_copy).cuda(), M=Bm)
             acc1, acc5 = accuracy(output, target, topk=(1, 5))
             losses.update(loss.item(), images.size(0))
             top1.update(acc1.item(), images.size(0))
@@ -140,6 +152,14 @@ def validate(val_loader, model, criterion, args, writer, epoch):
 
             if i % args.print_freq == 0:
                 progress.display(i)
+
+        output_whole = np.concatenate(output_whole, axis=0)
+        target_whole = np.concatenate(target_whole, axis=0)
+
+        with open('output1.npy', 'wb') as f:
+            np.save(f, output_whole)
+        with open('target1.npy', 'wb') as f:
+            np.save(f, target_whole)
 
         progress.display(len(val_loader))
 
